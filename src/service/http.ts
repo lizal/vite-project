@@ -11,12 +11,12 @@ axios.interceptors.request.use((config): AxiosRequestConfig<any> => {
   }
   return config
 },
-(error) => {
+(error: any) => {
   return error
 }
 )
 
-axios.interceptors.response.use((res) => {
+axios.interceptors.response.use((res: any) => {
   if(res.data.code === 500) {
     localStorage.setItem('token', '')
   }

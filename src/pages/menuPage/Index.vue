@@ -1,16 +1,14 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import BaseLayout from "./components/BaseLayout.vue";
+import BaseLayout from "../../components/BaseLayout.vue";
 </script>
 
 <template>
-  <n-config-provider :theme="theme">
-    <div id="app">
-      <router-view/>
-    </div>
-
-  </n-config-provider>
+  <BaseLayout>
+    <n-button @click="theme = darkTheme">深色</n-button>
+    <n-button @click="theme = null">浅色</n-button>
+  </BaseLayout>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
