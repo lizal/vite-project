@@ -16,10 +16,12 @@
       <div class="top-navigation">
         <div class="user-warpper">
           登录用户
-          <n-button #icon quaternary circle @click="logout">
-            <n-icon size="24">
-              <exit-outline />
-            </n-icon>
+          <n-button quaternary circle @click="logout">
+            <template #icon>
+              <n-icon size="24">
+                <exit-outline />
+              </n-icon>
+            </template>
           </n-button>
         </div>
       </div>
@@ -27,7 +29,7 @@
         <n-breadcrumb-item>且听风吟</n-breadcrumb-item>
       </n-breadcrumb>
       <n-layout-content content-style="padding: 20px;">
-        <slot></slot>
+        <template #default> </template>
       </n-layout-content>
     </div>
   </n-layout>
@@ -38,7 +40,7 @@ import { ExitOutline } from "@vicons/ionicons5";
 import { defineComponent, h, ref } from "vue";
 import { useRouter } from "vue-router";
 import { NIcon } from "naive-ui";
-import { userMainStore } from '../store/modules/user'
+import { userMainStore } from "../store/modules/user";
 
 import {
   BookOutline as BookIcon,
@@ -143,14 +145,14 @@ export default defineComponent({
     const router = useRouter();
     return {
       menuOptions,
-      logout: ()=> {
-        debugger
-        userStore.logout().then(res => {
+      logout: () => {
+        debugger;
+        userStore.logout().then((res) => {
           router.push({
-            name: 'login'
-          })
-        })
-      }
+            name: "login",
+          });
+        });
+      },
     };
   },
   data() {

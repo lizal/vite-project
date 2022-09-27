@@ -8,7 +8,7 @@ axios.interceptors.request.use(
   (config): AxiosRequestConfig<any> => {
     const token = window.localStorage.getItem("X-Access-Token");
     if (token) {
-      config.headers['X-Access-Token'] = token;
+      config.headers["X-Access-Token"] = token;
     }
     return config;
   },

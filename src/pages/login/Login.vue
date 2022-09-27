@@ -5,17 +5,30 @@
         <n-icon size="28">
           <person-outline />
         </n-icon>
-        <n-input size="large" placeholder="用户名" v-model:value="formData.username" style="width: 560px;"></n-input>
+        <n-input
+          v-model:value="formData.username"
+          size="large"
+          placeholder="用户名"
+          style="width: 560px"
+        ></n-input>
       </n-space>
       <n-space>
         <n-icon size="28">
           <lock-closed-outline />
         </n-icon>
-        <n-input size="large" type="password" placeholder="密码" v-model:value="formData.password" style="width: 560px;"></n-input>
+        <n-input
+          v-model:value="formData.password"
+          size="large"
+          type="password"
+          placeholder="密码"
+          style="width: 560px"
+        ></n-input>
       </n-space>
     </n-space>
     <div class="login-btn">
-      <n-button size="large" color="#40a9ff" @click="toHome" style="width: 100%;">登录</n-button>
+      <n-button size="large" color="#40a9ff" style="width: 100%" @click="toHome"
+        >登录</n-button
+      >
     </div>
   </div>
   <div></div>
@@ -23,27 +36,27 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { defineComponent, reactive} from 'vue';
-import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
-import {ILoginParams} from '../../service/api/login/types'
-import { userMainStore } from '../../store/modules/user'
-export default defineComponent ({
+import { defineComponent, reactive } from "vue";
+import { PersonOutline, LockClosedOutline } from "@vicons/ionicons5";
+import { ILoginParams } from "../../service/api/login/types";
+import { userMainStore } from "../../store/modules/user";
+export default defineComponent({
   components: {
     PersonOutline,
-    LockClosedOutline
+    LockClosedOutline,
   },
   setup() {
     const router = useRouter();
     const userStore = userMainStore();
-    let formData:ILoginParams = reactive({username: '', password: ''})
+    let formData: ILoginParams = reactive({ username: "", password: "" });
     return {
       formData,
       toHome: () => {
-        userStore.login(formData).then(res => {
+        userStore.login(formData).then((res) => {
           router.push({
             name: "home",
           });
-        })
+        });
       },
     };
   },
@@ -51,15 +64,15 @@ export default defineComponent ({
 </script>
 
 <style scoped>
-  .login-wrap{
-    position: absolute;
-    left: 50%;
-    margin-top: 300px;
-    margin-left: -300px;
-    width: 600px;
-  }
-  .login-btn{
-    margin-top: 20px;
-    text-align: center;
-  }
+.login-wrap {
+  position: absolute;
+  left: 50%;
+  margin-top: 300px;
+  margin-left: -300px;
+  width: 600px;
+}
+.login-btn {
+  margin-top: 20px;
+  text-align: center;
+}
 </style>

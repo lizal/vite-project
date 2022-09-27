@@ -16,7 +16,7 @@ import {
   NBreadcrumbItem,
   NIcon,
   NSpace,
-  NInput
+  NInput,
 } from "naive-ui";
 
 const naive = create({
@@ -33,7 +33,7 @@ const naive = create({
     NBreadcrumbItem,
     NIcon,
     NSpace,
-    NInput
+    NInput,
   ],
 });
 
