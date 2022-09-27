@@ -23,25 +23,27 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        additionalData: '@import "@/assets/style/main.less"'
-      }
-    }
+        additionalData: '@import "@/assets/style/main.less"',
+      },
+    },
   },
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 3000,
     open: true,
     https: false,
     proxy: {
-      
-    }
+      '/aytocc': {
+        target: 'http://10.253.129.6:3013',
+      },
+    },
   },
   build: {
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
-      }
-    }
-  }
+        drop_debugger: true,
+      },
+    },
+  },
 });

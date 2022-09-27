@@ -1,16 +1,16 @@
 import { defineStore } from "pinia";
 
 export const useMainStore = defineStore({
-  id: 'main',
+  id: "main",
   state: () => ({
-    name: '超级管理员'
+    name: "超级管理员",
   }),
   getters: {
     nameLength: (state) => state.name.length,
   },
   actions: {
     async insertPost(data: string) {
-      this.name = data
-    }
-  }
-})
+      this.name = data;
+    },
+  },
+});

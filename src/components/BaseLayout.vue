@@ -7,15 +7,16 @@
       :collapsed-width="64"
       :width="240"
       :native-scrollbar="false"
-      style="max-height: 320px;"
+      style="max-height: 320px"
     >
       <div></div>
       <n-menu v-model:value="activeKey" :options="menuOptions" />
     </n-layout-sider>
     <div class="layout-left" style="width: 100%">
       <div class="top-navigation">
-        <div class="user-warpper">登录用户
-          <n-button quaternary circle #icon>
+        <div class="user-warpper">
+          登录用户
+          <n-button #icon quaternary circle @click="logout">
             <n-icon size="24">
               <exit-outline />
             </n-icon>
@@ -33,134 +34,146 @@
 </template>
 
 <script lang="ts">
-import { ExitOutline } from '@vicons/ionicons5'
-import { defineComponent, h, ref } from 'vue';
-import { NIcon } from 'naive-ui';
+import { ExitOutline } from "@vicons/ionicons5";
+import { defineComponent, h, ref } from "vue";
+import { useRouter } from "vue-router";
+import { NIcon } from "naive-ui";
+import { userMainStore } from '../store/modules/user'
 
 import {
   BookOutline as BookIcon,
   PersonOutline as PersonIcon,
-  WineOutline as WineIcon
-} from '@vicons/ionicons5'
+  WineOutline as WineIcon,
+} from "@vicons/ionicons5";
 
-function renderIcon (icon) {
-  return () => h(NIcon, null, { default: () => h(icon) })
+function renderIcon(icon: any) {
+  return () => h(NIcon, null, { default: () => h(icon) });
 }
 
 const menuOptions = [
   {
     label: () =>
       h(
-        'a',
+        "a",
         {
-          href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F',
-          target: '_blank',
-          rel: 'noopenner noreferrer'
+          href: "https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F",
+          target: "_blank",
+          rel: "noopenner noreferrer",
         },
-        '且听风吟'
+        "且听风吟"
       ),
-    key: 'hear-the-wind-sing',
-    icon: renderIcon(BookIcon)
+    key: "hear-the-wind-sing",
+    icon: renderIcon(BookIcon),
   },
   {
-    label: '1973年的弹珠玩具',
-    key: 'pinball-1973',
-    icon: renderIcon(BookIcon),
+    label: "1973年的弹珠玩具",
+    key: "pinball-1973",
+    icon: renderIcon(PersonIcon),
     // disabled: true,
     children: [
       {
-        label: '鼠',
-        key: 'rat'
-      }
-    ]
+        label: "鼠",
+        key: "rat",
+      },
+    ],
   },
   {
-    label: '寻羊冒险记',
-    key: 'a-wild-sheep-chase',
+    label: "寻羊冒险记",
+    key: "a-wild-sheep-chase",
     icon: renderIcon(BookIcon),
     // disabled: true
   },
   {
-    label: '舞，舞，舞',
-    key: 'dance-dance-dance',
+    label: "舞，舞，舞",
+    key: "dance-dance-dance",
     icon: renderIcon(BookIcon),
     children: [
       {
-        type: 'group',
-        label: '人物',
-        key: 'people',
+        type: "group",
+        label: "人物",
+        key: "people",
         children: [
           {
-            label: '叙事者',
-            key: 'narrator',
-            icon: renderIcon(PersonIcon)
+            label: "叙事者",
+            key: "narrator",
+            icon: renderIcon(PersonIcon),
           },
           {
-            label: '羊男',
-            key: 'sheep-man',
-            icon: renderIcon(PersonIcon)
-          }
-        ]
+            label: "羊男",
+            key: "sheep-man",
+            icon: renderIcon(PersonIcon),
+          },
+        ],
       },
       {
-        label: '饮品',
-        key: 'beverage',
+        label: "饮品",
+        key: "beverage",
         icon: renderIcon(WineIcon),
         children: [
           {
-            label: '威士忌',
-            key: 'whisky'
-          }
-        ]
+            label: "威士忌",
+            key: "whisky",
+          },
+        ],
       },
       {
-        label: '食物',
-        key: 'food',
+        label: "食物",
+        key: "food",
         children: [
           {
-            label: '三明治',
-            key: 'sandwich'
-          }
-        ]
+            label: "三明治",
+            key: "sandwich",
+          },
+        ],
       },
       {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes'
-      }
-    ]
-  }
-]
+        label: "过去增多，未来减少",
+        key: "the-past-increases-the-future-recedes",
+      },
+    ],
+  },
+];
 export default defineComponent({
+  name: "BaseLayout",
   components: {
-    ExitOutline
+    ExitOutline,
   },
   setup() {
+    const userStore = userMainStore();
+    const router = useRouter();
     return {
       menuOptions,
-    }
+      logout: ()=> {
+        debugger
+        userStore.logout().then(res => {
+          router.push({
+            name: 'login'
+          })
+        })
+      }
+    };
   },
   data() {
     return {
-      menuOptions,
-      activeKey: ref(null)
-    }
-  }
-})
+      // menuOptions,
+      activeKey: ref(null),
+    };
+  },
+});
 </script>
 
 <style scoped>
-.n-layout, .n-layout-sider{
+.n-layout,
+.n-layout-sider {
   height: 100% !important;
-
 }
-.n-layout-sider{
+.n-layout-sider {
   max-height: 100% !important;
-
 }
 .n-layout-content {
   height: calc(100% - 60px) !important;
 }
-.top-navigation{
+.top-navigation {
   padding: 8px 12px;
   border-bottom: 1px solid rgb(239, 239, 245);
 }
