@@ -15,7 +15,7 @@
     <div class="layout-left" style="width: 100%">
       <div class="top-navigation">
         <div class="user-warpper">
-          登录用户
+          {{username}}
           <n-button quaternary circle @click="logout">
             <template #icon>
               <n-icon size="24">
@@ -26,7 +26,7 @@
         </div>
       </div>
       <n-breadcrumb>
-        <n-breadcrumb-item>且听风吟</n-breadcrumb-item>
+        <n-breadcrumb-item>{{activeKey}}</n-breadcrumb-item>
       </n-breadcrumb>
       <n-layout-content content-style="padding: 20px;">
         <template #default> </template>
@@ -54,16 +54,7 @@ function renderIcon(icon: any) {
 
 const menuOptions = [
   {
-    label: () =>
-      h(
-        "a",
-        {
-          href: "https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F",
-          target: "_blank",
-          rel: "noopenner noreferrer",
-        },
-        "且听风吟"
-      ),
+    label: "且听风吟",
     key: "hear-the-wind-sing",
     icon: renderIcon(BookIcon),
   },
@@ -142,11 +133,12 @@ export default defineComponent({
   },
   setup() {
     const userStore = userMainStore();
+    const username = JSON.parse(localStorage.getItem('userInfo') || '').realname
     const router = useRouter();
     return {
+      username,
       menuOptions,
       logout: () => {
-        debugger;
         userStore.logout().then((res) => {
           router.push({
             name: "login",

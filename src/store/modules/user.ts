@@ -3,13 +3,14 @@ import loginApi from "../../service/api/login/login";
 import { ILoginParams } from "../../service/api/login/types";
 
 export const userMainStore = defineStore({
-  id: "main",
+  id: "user",
   state: () => ({
     name: "",
   }),
-  getters: {
-    nameLength: (state) => state.name.length,
-  },
+  // getters: {
+  //   nameLength: (state) => state.name.length,
+  //   name: (state) => state.name,
+  // },
   actions: {
     async login(formData: ILoginParams) {
       return new Promise((resolve, reject) => {

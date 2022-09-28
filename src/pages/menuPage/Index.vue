@@ -6,7 +6,7 @@ import BaseLayout from "../../components/BaseLayout.vue";
 
 <template>
   <BaseLayout>
-    <n-button @click="theme = darkTheme">深色</n-button>
+    <n-button @click="theme = undefined">深色</n-button>
     <n-button @click="theme = undefined">浅色</n-button>
   </BaseLayout>
 </template>
