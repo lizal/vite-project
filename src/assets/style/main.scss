@@ -1,6 +1,6 @@
-@test-color: red;
+$test-color: red;
 .test {
-  color: @test-color;
+  color: $test-color;
 }
 
 html,

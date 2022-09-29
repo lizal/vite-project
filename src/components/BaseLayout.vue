@@ -10,7 +10,7 @@
       style="max-height: 320px"
     >
       <div></div>
-      <n-menu v-model:value="activeKey" :options="menuOptions" />
+      <n-menu v-model:value="activeKey" :options="menuOptions" @update:value="handleUpdateValue" />
     </n-layout-sider>
     <div class="layout-left" style="width: 100%">
       <div class="top-navigation">
@@ -39,7 +39,7 @@
 import { ExitOutline } from "@vicons/ionicons5";
 import { defineComponent, h, ref } from "vue";
 import { useRouter } from "vue-router";
-import { NIcon } from "naive-ui";
+import { MenuOption, NIcon } from "naive-ui";
 import { userMainStore } from "../store/modules/user";
 
 import {
@@ -136,6 +136,8 @@ export default defineComponent({
     const username = JSON.parse(localStorage.getItem('userInfo') || '').realname
     const router = useRouter();
     return {
+      activeKey: ref(null),
+      activeMenu: ref(null),
       username,
       menuOptions,
       logout: () => {
@@ -145,14 +147,12 @@ export default defineComponent({
           });
         });
       },
+      handleUpdateValue: (key: string, item: MenuOption) => {
+        console.log(item)
+        this.activeMenu = item.label
+      }
     };
-  },
-  data() {
-    return {
-      // menuOptions,
-      activeKey: ref(null),
-    };
-  },
+  }
 });
 </script>
 

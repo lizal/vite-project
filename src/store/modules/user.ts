@@ -7,10 +7,10 @@ export const userMainStore = defineStore({
   state: () => ({
     name: "",
   }),
-  // getters: {
-  //   nameLength: (state) => state.name.length,
-  //   name: (state) => state.name,
-  // },
+  getters: {
+    nameLength: (state) => state.name.length,
+    name: (state) => state.name,
+  },
   actions: {
     async login(formData: ILoginParams) {
       return new Promise((resolve, reject) => {
