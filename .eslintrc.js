@@ -58,12 +58,8 @@ module.exports = {
     "no-self-compare": "warn",
     // 禁止空格和 tab 的混合缩进
     "no-mixed-spaces-and-tabs": "warn",
-    "vue/multi-word-component-names": [
-      "error",
-      {
-        ignores: ["Index", "Login"],
-      },
-    ],
+    //关闭驼峰命名规则
+    "vue/multi-word-component-names": 0,
   },
   globals: {
     defineProps: "readonly",

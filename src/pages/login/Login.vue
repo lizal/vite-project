@@ -53,6 +53,7 @@ export default defineComponent({
       formData,
       toHome: () => {
         userStore.login(formData).then((res) => {
+          console.log(res);
           router.push({
             name: "home",
           });

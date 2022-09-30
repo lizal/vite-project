@@ -1,8 +1,11 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import path from "path";
+import { resolve } from 'path';
 import viteCompression from "vite-plugin-compression";
 
+function pathResolve(dir: string) {
+  return resolve(process.cwd(), '.', dir);
+}
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,9 +19,14 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
+    alias: [{
+      find: /\/#\//,
+      replacement: pathResolve('types') + '/',
     },
+    {
+      find: '@',
+      replacement: pathResolve('src') + '/',
+    }],
   },
   css: {
     preprocessorOptions: {

@@ -1,12 +1,14 @@
 <template>
-  <div>
-    
-  </div>
+  <div>{{ content }}</div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue";
-  export default defineComponent({
-
-  })
+import { defineComponent, ref } from "vue";
+export default defineComponent({
+  setup() {
+    return {
+      content: ref(null),
+    };
+  },
+});
 </script>

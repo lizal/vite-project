@@ -10,12 +10,16 @@
       style="max-height: 320px"
     >
       <div></div>
-      <n-menu v-model:value="activeKey" :options="menuOptions" @update:value="handleUpdateValue" />
+      <n-menu
+        v-model:value="activeKey"
+        :options="menuOptions"
+        @update:value="handleUpdateValue"
+      />
     </n-layout-sider>
     <div class="layout-left" style="width: 100%">
       <div class="top-navigation">
         <div class="user-warpper">
-          {{username}}
+          {{ username }}
           <n-button quaternary circle @click="logout">
             <template #icon>
               <n-icon size="24">
@@ -26,7 +30,7 @@
         </div>
       </div>
       <n-breadcrumb>
-        <n-breadcrumb-item>{{activeKey}}</n-breadcrumb-item>
+        <n-breadcrumb-item>{{ activeKey }}</n-breadcrumb-item>
       </n-breadcrumb>
       <n-layout-content content-style="padding: 20px;">
         <template #default> </template>
@@ -37,7 +41,7 @@
 
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h } from "vue";
 import { useRouter } from "vue-router";
 import { MenuOption, NIcon } from "naive-ui";
 import { userMainStore } from "../store/modules/user";
@@ -133,26 +137,31 @@ export default defineComponent({
   },
   setup() {
     const userStore = userMainStore();
-    const username = JSON.parse(localStorage.getItem('userInfo') || '').realname
+    const username = JSON.parse(
+      localStorage.getItem("userInfo") || ""
+    ).realname;
     const router = useRouter();
+    let activeKey = "";
+    let activeMenu = {};
     return {
-      activeKey: ref(null),
-      activeMenu: ref(null),
+      activeKey,
+      activeMenu,
       username,
       menuOptions,
       logout: () => {
-        userStore.logout().then((res) => {
+        userStore.logout().then(() => {
           router.push({
             name: "login",
           });
         });
       },
       handleUpdateValue: (key: string, item: MenuOption) => {
-        console.log(item)
-        this.activeMenu = item.label
-      }
+        console.log(item);
+        activeKey = key;
+        activeMenu = item;
+      },
     };
-  }
+  },
 });
 </script>
 
