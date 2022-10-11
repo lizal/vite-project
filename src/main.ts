@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import router from "./router/router";
+import router, { setupRouter } from "./router";
 import { createPinia } from "pinia";
 import {
   create,
@@ -39,8 +39,13 @@ const naive = create({
 
 const app = createApp(App);
 
-app.use(router);
+
 app.use(createPinia());
 app.use(naive);
+
+// 挂载路由
+await setupRouter(app);
+// 路由准备就绪后挂载APP实例
+await router.isReady();
 
 app.mount("#app");

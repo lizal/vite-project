@@ -41,8 +41,8 @@ export default defineConfig({
     open: true,
     https: false,
     proxy: {
-      '/aytocc': {
-        target: 'http://10.253.129.6:3013',
+      '/vzs': {
+        target: 'http://10.253.129.6:9001',
       },
     },
   },

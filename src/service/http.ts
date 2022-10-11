@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import NProgress from "nprogress";
+import { ResType } from './type'
 
-axios.defaults.baseURL = "/aytocc";
+axios.defaults.baseURL = "/vzs";
 axios.defaults.timeout = 15000;
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=UTF-8";
 axios.interceptors.request.use(
@@ -23,13 +24,6 @@ axios.interceptors.response.use((res: any) => {
   }
   return res;
 });
-
-interface ResType<T> {
-  code: number;
-  data?: T;
-  msg: string;
-  err?: string;
-}
 
 interface Http {
   get<T>(url: string, params?: unknown): Promise<ResType<T>>;

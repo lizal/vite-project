@@ -8,6 +8,9 @@ const loginApi: T.ILoginApi = {
   logout() {
     return http.post("/sys/logout");
   },
+  getPermissionList(params) {
+    return http.get("/sys/permission/getUserPermissionByToken", params)
+  }
 };
 
 export default loginApi;

@@ -1,13 +1,17 @@
-// import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 import { Router } from "vue-router";
 // import { isNavigationFailure, Router } from "vue-router";
 // import { userMainStore } from "@/store/modules/user";
+import { useAsyncRouteStoreWidthOut } from "@/store/modules/asyncRoute";
 
 const whitePathList = ["/login"];
 
 export function createRouterGuards(router: Router) {
+  
   // const userStore = userMainStore();
+  const asyncRouteStore = useAsyncRouteStoreWidthOut();
   router.beforeEach(async (to, from, next) => {
+    debugger
     // const Loading = window.$loading || null
     if (from.path === "/login" && to.name === "error") {
       next({ name: "home" });
@@ -40,5 +44,23 @@ export function createRouterGuards(router: Router) {
         return;
       }
     }
+    if (asyncRouteStore.getIsDynamicAddedRoute) {
+      next();
+      return;
+    }
+
+    // const userInfo = await userStore.GetInfo();
+    const routes = await asyncRouteStore.generateRoutes({});
+    console.log(routes)
+    // 动态添加可访问路由表
+    routes.forEach((item) => {
+      router.addRoute(item as unknown as RouteRecordRaw);
+    });
+
+    const redirectPath = (from.query.redirect || to.path) as string;
+    const redirect = decodeURIComponent(redirectPath);
+    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
+    asyncRouteStore.setDynamicAddedRoute(true);
+    next(nextData);
   });
 }

@@ -8,8 +8,12 @@ export const userMainStore = defineStore({
     name: "",
   }),
   getters: {
-    nameLength: (state) => state.name.length,
-    // name: (state) => state.name,
+    getNameLength(): number {
+      return this.name.length
+    },
+    getName(): string {
+      return this.name
+    }
   },
   actions: {
     async login(formData: ILoginParams) {
@@ -31,6 +35,19 @@ export const userMainStore = defineStore({
           }
         });
       });
+    },
+    async getPermissions() {
+      return new Promise((resolve, reject) => {
+        let token = localStorage.getItem("X-Access-Token") || ''
+        loginApi.getPermissionList({token}).then(res => {
+          if(res.success) {
+            
+            resolve(res.result)
+          } else {
+            reject()
+          }
+        })
+      })
     },
     async logout() {
       return new Promise((resolve, reject) => {
