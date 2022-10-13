@@ -1,21 +1,12 @@
-<!-- <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import BaseLayout from "../../components/BaseLayout.vue";
-</script> -->
 
 <template>
-  <BaseLayout>
     <n-button @click="theme = undefined">深色</n-button>
     <n-button @click="theme = undefined">浅色</n-button>
-  </BaseLayout>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { darkTheme } from "naive-ui";
-import BaseLayout from "../../components/BaseLayout.vue";
 export default defineComponent({
-  components: { BaseLayout },
   setup() {
     return {
       darkTheme,

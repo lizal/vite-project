@@ -1,7 +1,7 @@
 import { toRaw, reactive, h } from "vue";
 import { defineStore } from "pinia";
 import { RouteRecordRaw, RouterLink } from "vue-router";
-import { routes as asyncRoutes } from "@/router/index";
+// import { routes as asyncRoutes } from "@/router/index";
 import { store } from '@/store';
 import { userMainStore } from './user'
 import { NIcon } from "naive-ui";
@@ -17,40 +17,12 @@ function renderIcon(icon: any) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-interface TreeHelperConfig {
-  id: string;
-  children: string;
-  pid: string;
-}
-
-const getConfig = (config: Partial<TreeHelperConfig>) =>
-  Object.assign({}, config);
-
 export interface IAsyncRouteState {
   menus: RouteRecordRaw[];
   routers: any[];
   addRouters: any[];
   keepAliveComponents: string[];
   isDynamicAddedRoute: boolean;
-}
-
-function filter<T = any>(
-  tree: T[],
-  func: (n: T) => boolean,
-  config: Partial<TreeHelperConfig> = {}
-): T[] {
-  config = getConfig(config);
-  const children = config.children as string;
-
-  function listFilter(list: T[]) {
-    return list
-      .map((node: any) => ({ ...node }))
-      .filter((node) => {
-        node[children] = node[children] && listFilter(node[children]);
-        return func(node) || (node[children] && node[children].length);
-      });
-  }
-  return listFilter(tree);
 }
 
 interface RouteItem {
@@ -85,24 +57,25 @@ function getModules() {
 
 function generateChildRouters<T extends RouteItem>(data: T[]) : T[] {
   let routers= [] as any[]
+  const modules = getModules()
   for (let item of data) {
-    let component = '', dirPath = ''
+    let component = '', dirPath = '', componentPath
     dirPath = item.component
-    if(item.component.indexOf("layouts") >= 0) {
-      component = "@/components/BaseLayout.vue"
-    } else {
+    if(item.component.indexOf("layouts") === -1) {
       component = "../../views/" + dirPath + ".vue"
+      componentPath = modules[component]
+    } else {
+      componentPath = import.meta.glob('../../components/BaseLayout.vue')['../../components/BaseLayout.vue']
     }
     let URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (s1, s2) => eval(s2)); // URL支持{{ window.xxx }}占位符变量
     if (isURL(URL)) {
       item.meta.url = URL;
     }
-    const modules = getModules()
     let menu: RouteItem = {
       name: item.name,
       path: item.path,
       redirect: item.redirect,
-      component: modules[component],
+      component: componentPath,
       meta: {
         title: item.meta.title,
         icon: item.meta.icon,
@@ -137,24 +110,27 @@ interface MenuItem {
 function revertMenu(menuData) {
   let resultData = [] as MenuItem[]
   menuData.forEach(item => {
-    let menu: MenuItem = {
-      label: item.children ? item.meta.title: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            path: item.path,
-          }
-        },
-        { default: () => item.meta.title }
-      ),
-      icon: renderIcon(BookIcon),
-      key: item.id,
+    if(!item.hidden){
+      let menu: MenuItem = {
+        // label: item.children ? item.meta.title: () =>
+        // h(
+        //   RouterLink,
+        //   {
+        //     to: {
+        //       path: item.path,
+        //     }
+        //   },
+        //   { default: () => item.meta.title }
+        // ),
+        label: item.meta.title,
+        icon: renderIcon(BookIcon),
+        key: item.id,
+      }
+      if(item.children && item.children.length) {
+        menu.children = revertMenu(item.children)
+      }
+      resultData.push(menu)
     }
-    if(item.children && item.children.length) {
-      menu.children = revertMenu(item.children)
-    }
-    resultData.push(menu)
   })
   return resultData
 }
@@ -192,33 +168,31 @@ export const useAsyncRouteStore = defineStore({
       const userStore = userMainStore()
       return new Promise((resolve) => {
         userStore.getPermissions().then((res:MenuResult) => {
+          //生成菜单
           let menuList = reactive(res.menu)
           menuList = menuList.filter((item) => !item.meta.hidden)
           menuList = revertMenu(menuList)
           console.log(menuList)
           this.setMenus(menuList)
-          // generateChildRouters(menuList)
+          //生成路由
           let accessedRouters;
           const permissionsList = reactive(res.menu) || [];
-          console.log(permissionsList)
           const routeFilter = (route) => {
             const { meta } = route;
-            const { permissions } = meta || {};
-            if (!permissions) return true;
-            return permissionsList.some((item) => !item.meta.hidden);
+            const { roles } = meta || {};
+            if (!roles) return true;
+            return permissionsList.some((item) => !item.hidden);
           };
-          //临时使用静态路由，后续替换
           try {
             //过滤账户是否拥有某一个权限，并将菜单从加载列表移除
             accessedRouters = generateChildRouters(permissionsList);
           } catch (error) {
             console.log(error);
           }
+          console.log(accessedRouters)
           accessedRouters = accessedRouters.filter(routeFilter);
           this.setRouters(accessedRouters);
-          // this.setMenus(accessedRouters);
           console.log('accessedRouters', accessedRouters)
-          // return toRaw(accessedRouters);
           resolve(toRaw(accessedRouters))
 
         })

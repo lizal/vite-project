@@ -55,7 +55,7 @@ export default defineComponent({
         userStore.login(formData).then((res) => {
           console.log(res);
           router.push({
-            name: "home",
+            path: "/",
           });
         });
       },

@@ -14,7 +14,7 @@ export function createRouterGuards(router: Router) {
     debugger
     // const Loading = window.$loading || null
     if (from.path === "/login" && to.name === "error") {
-      next({ name: "home" });
+      next({ path: "/" });
       return;
     }
     if (whitePathList.includes(to.path)) {
