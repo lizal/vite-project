@@ -11,22 +11,22 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/login",
     name: "login",
-    component: () => import("@/pages/login/Login.vue"),
+    component: () => import("@/views/login/Login.vue"),
   },
   {
     path: "/home",
     name: "home",
-    component: () => import("@/pages/menuPage/Index.vue"),
+    component: () => import("@/views/menuPage/Index.vue"),
   },
   {
     path: "/analysis",
     name: "analysis",
-    component: () => import("@/pages/menuPage/Analysis.vue"),
+    component: () => import("@/views/menuPage/Analysis.vue"),
   },
   {
     path: "/404",
     name: 'error',
-    component: () => import("@/pages/error/404.vue")
+    component: () => import("@/views/error/404.vue")
   }
 ];
 

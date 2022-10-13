@@ -1,6 +1,6 @@
 import { toRaw, reactive, h } from "vue";
 import { defineStore } from "pinia";
-import { RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw, RouterLink } from "vue-router";
 import { routes as asyncRoutes } from "@/router/index";
 import { store } from '@/store';
 import { userMainStore } from './user'
@@ -58,11 +58,11 @@ interface RouteItem {
   name: string;
   path: string;
   redirect?: string;
-  hidden: boolean;
   meta: {
     url: string;
     title: string;
     icon?: string;
+    hidden?: boolean;
     keepAlive: boolean;
     internalOrExternal?: boolean;
     permissionList?: object[];
@@ -79,37 +79,42 @@ function isURL(s) {
   return /^http[s]?:\/\/.*/.test(s);
 }
 
+function getModules() {
+  return import.meta.glob('../../views/**/*.vue')
+}
+
 function generateChildRouters<T extends RouteItem>(data: T[]) : T[] {
   let routers= [] as any[]
   for (let item of data) {
     let component = '', dirPath = ''
     dirPath = item.component
     if(item.component.indexOf("layouts") >= 0) {
-      component = "@/components/" + dirPath
+      component = "@/components/BaseLayout.vue"
     } else {
-      component = "@/pages/" + dirPath + ".vue"
+      component = "../../views/" + dirPath + ".vue"
     }
     let URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (s1, s2) => eval(s2)); // URL支持{{ window.xxx }}占位符变量
     if (isURL(URL)) {
       item.meta.url = URL;
     }
-    let componentPath = () => require(component);
+    const modules = getModules()
     let menu: RouteItem = {
-      path: item.path,
       name: item.name,
+      path: item.path,
       redirect: item.redirect,
-      component: componentPath,
-      hidden: item.hidden,
+      component: modules[component],
       meta: {
         title: item.meta.title,
         icon: item.meta.icon,
         url: item.meta.url,
+        hidden: item.meta.hidden,
         permissionList: item.meta.permissionList,
         keepAlive: item.meta.keepAlive,
         internalOrExternal: item.meta.internalOrExternal
       },
     };
     if (item.children && item.children.length > 0) {
+      debugger
       menu.children = [...generateChildRouters(item.children)];
     }
     //判断是否生成路由
@@ -123,7 +128,7 @@ function generateChildRouters<T extends RouteItem>(data: T[]) : T[] {
 }
 
 interface MenuItem {
-  label: string;
+  label: string|(()=> VNode);
   icon: () => VNode;
   key: string;
   children? : MenuItem[];
@@ -133,7 +138,16 @@ function revertMenu(menuData) {
   let resultData = [] as MenuItem[]
   menuData.forEach(item => {
     let menu: MenuItem = {
-      label: item.meta.title,
+      label: item.children ? item.meta.title: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            path: item.path,
+          }
+        },
+        { default: () => item.meta.title }
+      ),
       icon: renderIcon(BookIcon),
       key: item.id,
     }
@@ -173,35 +187,43 @@ export const useAsyncRouteStore = defineStore({
     setKeepAliveComponents(compNames) {
       this.keepAliveComponents = compNames;
     },
-    async generateRoutes(data) {
+    async generateRoutes() {
       debugger
       const userStore = userMainStore()
-      userStore.getPermissions().then((res:MenuResult) => {
-        let menuList = reactive(res.menu)
-        menuList = menuList.filter((item) => !item.hidden)
-        menuList = revertMenu(menuList)
-        this.setMenus(menuList)
-        // generateChildRouters(menuList)
+      return new Promise((resolve) => {
+        userStore.getPermissions().then((res:MenuResult) => {
+          let menuList = reactive(res.menu)
+          menuList = menuList.filter((item) => !item.meta.hidden)
+          menuList = revertMenu(menuList)
+          console.log(menuList)
+          this.setMenus(menuList)
+          // generateChildRouters(menuList)
+          let accessedRouters;
+          const permissionsList = reactive(res.menu) || [];
+          console.log(permissionsList)
+          const routeFilter = (route) => {
+            const { meta } = route;
+            const { permissions } = meta || {};
+            if (!permissions) return true;
+            return permissionsList.some((item) => !item.meta.hidden);
+          };
+          //临时使用静态路由，后续替换
+          try {
+            //过滤账户是否拥有某一个权限，并将菜单从加载列表移除
+            accessedRouters = generateChildRouters(permissionsList);
+          } catch (error) {
+            console.log(error);
+          }
+          accessedRouters = accessedRouters.filter(routeFilter);
+          this.setRouters(accessedRouters);
+          // this.setMenus(accessedRouters);
+          console.log('accessedRouters', accessedRouters)
+          // return toRaw(accessedRouters);
+          resolve(toRaw(accessedRouters))
+
+        })
+
       })
-      let accessedRouters;
-      const permissionsList = data.permissions || [];
-      const routeFilter = (route) => {
-        const { meta } = route;
-        const { permissions } = meta || {};
-        if (!permissions) return true;
-        return permissionsList.some((item) => permissions.includes(item.value));
-      };
-      //临时使用静态路由，后续替换
-      try {
-        //过滤账户是否拥有某一个权限，并将菜单从加载列表移除
-        accessedRouters = filter(asyncRoutes, routeFilter);
-      } catch (error) {
-        console.log(error);
-      }
-      accessedRouters = accessedRouters.filter(routeFilter);
-      this.setRouters(accessedRouters);
-      // this.setMenus(accessedRouters);
-      return toRaw(accessedRouters);
     },
   },
 });

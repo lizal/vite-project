@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
-import { defineComponent, reactive } from "vue";
+import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { MenuOption } from "naive-ui";
 import { userMainStore } from "../store/modules/user";
@@ -57,8 +57,7 @@ export default defineComponent({
   setup() {
     const userStore = userMainStore();
     const routerStore = useAsyncRouteStoreWidthOut()
-    const menuData = reactive(routerStore.menus)
-    console.log(menuData)
+    // const menuData = reactive()
     const username = JSON.parse(
       localStorage.getItem("userInfo") || ""
     ).realname;
@@ -69,7 +68,7 @@ export default defineComponent({
       activeKey,
       activeMenu,
       username,
-      menuOptions: menuData,
+      menuOptions: routerStore.menus,
       logout: () => {
         userStore.logout().then(() => {
           router.push({

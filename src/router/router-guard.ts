@@ -50,17 +50,19 @@ export function createRouterGuards(router: Router) {
     }
 
     // const userInfo = await userStore.GetInfo();
-    const routes = await asyncRouteStore.generateRoutes({});
-    console.log(routes)
-    // 动态添加可访问路由表
-    routes.forEach((item) => {
-      router.addRoute(item as unknown as RouteRecordRaw);
+    const routes = await asyncRouteStore.generateRoutes().then((res:any) => {
+      // 动态添加可访问路由表
+      res.forEach((item) => {
+        router.addRoute(item as unknown as RouteRecordRaw);
+      });
+      const redirectPath = (from.query.redirect || to.path) as string;
+      const redirect = decodeURIComponent(redirectPath);
+      const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
+      asyncRouteStore.setDynamicAddedRoute(true);
+      console.log(nextData)
+      next(nextData);
+
     });
 
-    const redirectPath = (from.query.redirect || to.path) as string;
-    const redirect = decodeURIComponent(redirectPath);
-    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
-    asyncRouteStore.setDynamicAddedRoute(true);
-    next(nextData);
   });
 }
