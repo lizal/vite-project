@@ -18,7 +18,7 @@ import {
   NSpace,
   NInput,
   NDialogProvider,
-  NMessageProvider
+  NMessageProvider,
 } from "naive-ui";
 
 const naive = create({
@@ -37,12 +37,11 @@ const naive = create({
     NSpace,
     NInput,
     NDialogProvider,
-    NMessageProvider
+    NMessageProvider,
   ],
 });
 
 const app = createApp(App);
-
 
 app.use(createPinia());
 app.use(naive);

@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import NProgress from "nprogress";
-import { ResType } from './type'
+import { ResType } from "./type";
 
 axios.defaults.baseURL = "/vzs";
 axios.defaults.timeout = 15000;

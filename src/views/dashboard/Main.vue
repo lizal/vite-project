@@ -9,8 +9,8 @@ import { defineComponent, ref } from "vue";
 export default defineComponent({
   setup() {
     return {
-      content: ref('main'),
-      theme: ref(undefined)
+      content: ref("main"),
+      theme: ref(undefined),
     };
   },
 });

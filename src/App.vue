@@ -2,8 +2,7 @@
   <n-message-provider>
     <n-dialog-provider>
       <n-config-provider :theme="theme">
-        <BaseLayout id="app">
-        </BaseLayout>
+        <BaseLayout id="app"> </BaseLayout>
       </n-config-provider>
     </n-dialog-provider>
   </n-message-provider>
@@ -14,7 +13,7 @@ import { defineComponent, ref } from "vue";
 import { darkTheme } from "naive-ui";
 
 export default defineComponent({
-  components: {BaseLayout},
+  components: { BaseLayout },
   setup() {
     return {
       darkTheme,

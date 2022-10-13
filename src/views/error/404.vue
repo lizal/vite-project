@@ -7,7 +7,7 @@ import { defineComponent, ref } from "vue";
 export default defineComponent({
   setup() {
     return {
-      content: ref('404'),
+      content: ref("404"),
     };
   },
 });

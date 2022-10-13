@@ -10,7 +10,7 @@ export default defineComponent({
   setup() {
     return {
       content: ref(null),
-      theme: ref(undefined)
+      theme: ref(undefined),
     };
   },
 });

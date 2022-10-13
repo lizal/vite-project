@@ -7,7 +7,7 @@
           <span>{{ username }}</span>
           <n-button quaternary color="#fff" @click="logout">
             <template #icon>
-              <n-icon size="20" color="#fff" style="margin-top: 0;">
+              <n-icon size="20" color="#fff" style="margin-top: 0">
                 <exit-outline />
               </n-icon>
             </template>
@@ -16,7 +16,7 @@
         </div>
       </div>
     </n-layout-header>
-    <n-layout has-sider style="height: calc(100% - 51px) !important;">
+    <n-layout has-sider style="height: calc(100% - 51px) !important">
       <n-layout-sider
         bordered
         show-trigger
@@ -26,18 +26,27 @@
         :native-scrollbar="false"
       >
         <n-menu
-          :accordion="true"
           v-model:value="activeKey"
+          :accordion="true"
           :options="menuOptions"
           @update:value="handleUpdateValue"
         />
       </n-layout-sider>
-      <div style="width: 100%;">
-        <n-breadcrumb style="height: 20px; padding: 10px;">
-          <n-breadcrumb-item>{{activeMenuTitle}}</n-breadcrumb-item>
+      <div style="width: 100%">
+        <n-breadcrumb style="height: 20px; padding: 10px">
+          <n-breadcrumb-item>{{ activeMenuTitle }}</n-breadcrumb-item>
         </n-breadcrumb>
-        <n-layout-content content-style="padding: 10px; background-color:#f0f2f5;" style="height: calc(100% - 40px) !important;">
-          <div style="height: calc(100% - 20px); padding: 10px; background-color: #fff;">
+        <n-layout-content
+          content-style="padding: 10px; background-color:#f0f2f5;"
+          style="height: calc(100% - 40px) !important"
+        >
+          <div
+            style="
+              height: calc(100% - 20px);
+              padding: 10px;
+              background-color: #fff;
+            "
+          >
             <router-view />
           </div>
         </n-layout-content>
@@ -54,25 +63,24 @@ import { MenuOption, useDialog, useMessage } from "naive-ui";
 import { userMainStore } from "../store/modules/user";
 import { useAsyncRouteStoreWidthOut } from "../store/modules/asyncRoute";
 
-
 export default defineComponent({
   name: "BaseLayout",
   components: {
     ExitOutline,
   },
   setup() {
-    const dialog = useDialog()
-    const message = useMessage()
+    const dialog = useDialog();
+    const message = useMessage();
     const userStore = userMainStore();
-    const routerStore = useAsyncRouteStoreWidthOut()
+    const routerStore = useAsyncRouteStoreWidthOut();
     // const menuData = reactive()
     const username = JSON.parse(
       localStorage.getItem("userInfo") || "{}"
     ).realname;
     const router = useRouter();
-    let activeKey = '';
-    let activeMenuTitle = '';
-    console.log(routerStore.menus)
+    let activeKey = "";
+    let activeMenuTitle = "";
+    console.log(routerStore.menus);
     return {
       activeKey,
       activeMenuTitle,
@@ -80,23 +88,23 @@ export default defineComponent({
       menuOptions: routerStore.menus,
       logout: () => {
         dialog.warning({
-          title: '提示',
-          content: '确定退出登录吗？',
-          negativeText: '取消',
-          positiveText: '确定',
+          title: "提示",
+          content: "确定退出登录吗？",
+          negativeText: "取消",
+          positiveText: "确定",
           onPositiveClick: () => {
             userStore.logout().then(() => {
-              message.success('退出登录成功')
+              message.success("退出登录成功");
               router.push({
                 name: "login",
               });
             });
-          }
-        })
+          },
+        });
       },
       handleUpdateValue: (key: string, item: MenuOption) => {
         activeKey = key;
-        activeMenuTitle = item.label || '';
+        activeMenuTitle = item.label || "";
         console.log(activeMenuTitle);
       },
     };
@@ -112,7 +120,7 @@ export default defineComponent({
 .n-layout-sider {
   max-height: 100% !important;
 }
-.mini-title{
+.mini-title {
   width: 220px;
   text-align: center;
   font-size: 18px;

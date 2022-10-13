@@ -9,11 +9,11 @@ export const userMainStore = defineStore({
   }),
   getters: {
     getNameLength(): number {
-      return this.name.length
+      return this.name.length;
     },
     getName(): string {
-      return this.name
-    }
+      return this.name;
+    },
   },
   actions: {
     async login(formData: ILoginParams) {
@@ -38,16 +38,15 @@ export const userMainStore = defineStore({
     },
     async getPermissions() {
       return new Promise((resolve, reject) => {
-        let token = localStorage.getItem("X-Access-Token") || ''
-        loginApi.getPermissionList({token}).then(res => {
-          if(res.success) {
-            
-            resolve(res.result)
+        const token = localStorage.getItem("X-Access-Token") || "";
+        loginApi.getPermissionList({ token }).then((res) => {
+          if (res.success) {
+            resolve(res.result);
           } else {
-            reject()
+            reject();
           }
-        })
-      })
+        });
+      });
     },
     async logout() {
       return new Promise((resolve, reject) => {

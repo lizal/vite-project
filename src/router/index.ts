@@ -1,6 +1,6 @@
 import { App } from "vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import {createRouterGuards} from './router-guard'
+import { createRouterGuards } from "./router-guard";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -15,9 +15,9 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/404",
-    name: 'error',
-    component: () => import("@/views/error/404.vue")
-  }
+    name: "error",
+    component: () => import("@/views/error/404.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -26,11 +26,9 @@ const router = createRouter({
 });
 
 export function setupRouter(app: App) {
-  app.use(router)
-  createRouterGuards(router)
+  app.use(router);
+  createRouterGuards(router);
 }
-export {
-  routes
-};
+export { routes };
 
 export default router;

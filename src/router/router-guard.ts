@@ -7,11 +7,10 @@ import { useAsyncRouteStoreWidthOut } from "@/store/modules/asyncRoute";
 const whitePathList = ["/login"];
 
 export function createRouterGuards(router: Router) {
-  
   // const userStore = userMainStore();
   const asyncRouteStore = useAsyncRouteStoreWidthOut();
   router.beforeEach(async (to, from, next) => {
-    debugger
+    debugger;
     // const Loading = window.$loading || null
     if (from.path === "/login" && to.name === "error") {
       next({ path: "/" });
@@ -50,19 +49,18 @@ export function createRouterGuards(router: Router) {
     }
 
     // const userInfo = await userStore.GetInfo();
-    const routes = await asyncRouteStore.generateRoutes().then((res:any) => {
+    const routes = await asyncRouteStore.generateRoutes().then((res: any) => {
       // 动态添加可访问路由表
       res.forEach((item) => {
         router.addRoute(item as unknown as RouteRecordRaw);
       });
       const redirectPath = (from.query.redirect || to.path) as string;
       const redirect = decodeURIComponent(redirectPath);
-      const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
+      const nextData =
+        to.path === redirect ? { ...to, replace: true } : { path: redirect };
       asyncRouteStore.setDynamicAddedRoute(true);
-      console.log(nextData)
+      console.log(nextData);
       next(nextData);
-
     });
-
   });
 }
