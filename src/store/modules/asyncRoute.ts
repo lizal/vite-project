@@ -202,7 +202,18 @@ export const useAsyncRouteStore = defineStore({
           };
           try {
             //过滤账户是否拥有某一个权限，并将菜单从加载列表移除
-            accessedRouters = generateChildRouters(permissionsList);
+            // accessedRouters = generateChildRouters(permissionsList);
+            accessedRouters = [{
+              path: "/",
+              name: "home",
+              component: import.meta.glob("../../components/layouts/BaseLayout.vue")[
+                "../../components/layouts/BaseLayout.vue"],
+              meta: {
+                title: "首页"
+              },
+              redirect: "/dashboard/analysis",
+              children: [...generateChildRouters(permissionsList)]
+            }]
           } catch (error) {
             console.log(error);
           }

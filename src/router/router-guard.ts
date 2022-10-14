@@ -4,7 +4,7 @@ import { Router } from "vue-router";
 // import { userMainStore } from "@/store/modules/user";
 import { useAsyncRouteStoreWidthOut } from "@/store/modules/asyncRoute";
 
-const whitePathList = ["/login"];
+const whitePathList = ["/user/login"];
 
 export function createRouterGuards(router: Router) {
   // const userStore = userMainStore();
@@ -12,7 +12,7 @@ export function createRouterGuards(router: Router) {
   router.beforeEach(async (to, from, next) => {
     debugger;
     // const Loading = window.$loading || null
-    if (from.path === "/login" && to.name === "error") {
+    if (from.path === "/user/login" && to.name === "error") {
       next({ path: "/" });
       return;
     }
@@ -31,7 +31,7 @@ export function createRouterGuards(router: Router) {
         replace: boolean;
         query?: Recordable<string>;
       } = {
-        path: "/login",
+        path: "/user/login",
         replace: true,
       };
       if (to.path) {

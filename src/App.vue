@@ -2,8 +2,9 @@
   <n-message-provider>
     <n-dialog-provider>
       <n-config-provider :theme="theme">
-        <!-- <div id="app"></div> -->
-        <BaseLayout id="app"> </BaseLayout>
+        <div id="app">
+          <router-view />
+        </div>
       </n-config-provider>
     </n-dialog-provider>
   </n-message-provider>
