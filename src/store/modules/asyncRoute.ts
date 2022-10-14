@@ -62,13 +62,18 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
     let component = "",
       dirPath = "",
       componentPath;
-    dirPath = item.component;
     if (item.component.indexOf("layouts") === -1) {
+      //临时处理
+      if (item.component.indexOf("tt-system;") !== -1) {
+        dirPath = item.component.substring(item.component.indexOf(";") + 1);
+      } else {
+        dirPath = item.component;
+      }
       component = "../../views/" + dirPath + ".vue";
       componentPath = modules[component];
     } else {
-      componentPath = import.meta.glob("../../components/BaseLayout.vue")[
-        "../../components/BaseLayout.vue"
+      componentPath = import.meta.glob("../../components/layouts/RouteView.vue")[
+        "../../components/layouts/RouteView.vue"
       ];
     }
     const URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (s1, s2) =>
@@ -117,6 +122,7 @@ function revertMenu(menuData) {
   const resultData = [] as MenuItem[];
   menuData.forEach((item) => {
     if (!item.hidden) {
+      console.log(item);
       const menu: MenuItem = {
         label: item.children
           ? item.meta.title
@@ -126,6 +132,7 @@ function revertMenu(menuData) {
                 {
                   to: {
                     path: item.path,
+                    // title: item.meta.title
                   },
                 },
                 { default: () => item.meta.title }

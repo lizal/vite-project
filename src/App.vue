@@ -2,13 +2,14 @@
   <n-message-provider>
     <n-dialog-provider>
       <n-config-provider :theme="theme">
+        <!-- <div id="app"></div> -->
         <BaseLayout id="app"> </BaseLayout>
       </n-config-provider>
     </n-dialog-provider>
   </n-message-provider>
 </template>
 <script lang="ts">
-import BaseLayout from "./components/BaseLayout.vue";
+import BaseLayout from "./components/layouts/BaseLayout.vue";
 import { defineComponent, ref } from "vue";
 import { darkTheme } from "naive-ui";
 

@@ -58,10 +58,17 @@
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
 import { defineComponent } from "vue";
+import type { VNode } from "vue";
 import { useRouter } from "vue-router";
-import { MenuOption, useDialog, useMessage } from "naive-ui";
-import { userMainStore } from "../store/modules/user";
-import { useAsyncRouteStoreWidthOut } from "../store/modules/asyncRoute";
+import { useDialog, useMessage } from "naive-ui";
+import { userMainStore } from "../../store/modules/user";
+import { useAsyncRouteStoreWidthOut } from "../../store/modules/asyncRoute";
+interface MenuItem {
+  label: string | (() => VNode);
+  icon: () => VNode;
+  key: string;
+  children?: MenuItem[];
+}
 
 export default defineComponent({
   name: "BaseLayout",
@@ -102,9 +109,14 @@ export default defineComponent({
           },
         });
       },
-      handleUpdateValue: (key: string, item: MenuOption) => {
+      handleUpdateValue: (key: string, item: MenuItem) => {
         activeKey = key;
-        activeMenuTitle = item.label || "";
+        if(typeof item.label === 'function') {
+          debugger
+          activeMenuTitle = item.label().children.default() || ''
+        } else {
+          activeMenuTitle = item.label;
+        }
         console.log(activeMenuTitle);
       },
     };
