@@ -1,4 +1,4 @@
-import { toRaw, reactive, h } from "vue";
+import { toRaw, h } from "vue";
 import { defineStore } from "pinia";
 import { RouteRecordRaw, RouterLink } from "vue-router";
 // import { routes as asyncRoutes } from "@/router/index";
@@ -26,6 +26,7 @@ export interface IAsyncRouteState {
 }
 
 interface RouteItem {
+  id: string,
   component: any;
   name: string;
   path: string;
@@ -83,6 +84,7 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
       item.meta.url = URL;
     }
     const menu: RouteItem = {
+      id:item.id,
       name: item.name,
       path: item.path,
       redirect: item.redirect,
@@ -98,7 +100,6 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
       },
     };
     if (item.children && item.children.length > 0) {
-      debugger;
       menu.children = [...generateChildRouters(item.children)];
     }
     //判断是否生成路由
@@ -122,7 +123,6 @@ function revertMenu(menuData) {
   const resultData = [] as MenuItem[];
   menuData.forEach((item) => {
     if (!item.hidden) {
-      console.log(item);
       const menu: MenuItem = {
         label: item.children
           ? item.meta.title
@@ -184,14 +184,14 @@ export const useAsyncRouteStore = defineStore({
       return new Promise((resolve) => {
         userStore.getPermissions().then((res: MenuResult) => {
           //生成菜单
-          let menuList = reactive(res.menu);
+          let menuList = res.menu.concat([]);
           menuList = menuList.filter((item) => !item.meta.hidden);
           menuList = revertMenu(menuList);
-          console.log(menuList);
           this.setMenus(menuList);
           //生成路由
           let accessedRouters;
-          const permissionsList = reactive(res.menu) || [];
+          const permissionsList = (res.menu || []).concat([]);
+          console.log(menuList);
           const routeFilter = (route) => {
             const { meta } = route;
             const { roles } = meta || {};

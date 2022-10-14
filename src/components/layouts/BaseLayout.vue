@@ -34,19 +34,13 @@
       </n-layout-sider>
       <div style="width: 100%">
         <n-breadcrumb style="height: 20px; padding: 10px">
-          <n-breadcrumb-item>{{ activeMenuTitle }}</n-breadcrumb-item>
+          <n-breadcrumb-item>{{ activeTitle }}</n-breadcrumb-item>
         </n-breadcrumb>
         <n-layout-content
           content-style="padding: 10px; background-color:#f0f2f5;"
           style="height: calc(100% - 40px) !important"
         >
-          <div
-            style="
-              height: calc(100% - 20px);
-              padding: 10px;
-              background-color: #fff;
-            "
-          >
+          <div style="height: calc(100% - 20px); padding: 10px; background-color: #fff; ">
             <router-view />
           </div>
         </n-layout-content>
@@ -57,7 +51,7 @@
 
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
-import { defineComponent } from "vue";
+import { ref, reactive, h, computed, defineComponent } from "vue";
 import type { VNode } from "vue";
 import { useRouter } from "vue-router";
 import { useDialog, useMessage } from "naive-ui";
@@ -85,12 +79,48 @@ export default defineComponent({
       localStorage.getItem("userInfo") || "{}"
     ).realname;
     const router = useRouter();
-    let activeKey = "";
-    let activeMenuTitle = "";
-    console.log(routerStore.menus);
+    let activeKey = ref("");
+    let activeItem = reactive({
+      item: {
+        label: '',
+        icon: () => h('icon'),
+        key: ''
+      }
+    });
+    let routerData = [] as any[]
+    routerStore.routers.forEach(item => {
+      if(item.children) {
+        routerData = routerData.concat(item.children)
+      } else {
+        routerData.push(item)
+      }
+    });
+    routerData.forEach(item => {
+      if(item.path === router.currentRoute.value.path) {
+        activeKey = ref(item.id)
+        activeItem = reactive({
+          item: {
+            label: item.meta.title,
+            icon: () => h('icon'),
+            key: item.id
+          }
+        });
+      }
+    });
+    let activeTitle = computed(()=> {
+      const item = activeItem.item as MenuItem
+      let title = ''
+      if( typeof item.label === 'string') {
+        title = item.label
+      } else {
+        title = item.label().children.default() || ''
+      }
+      return title
+    })
     return {
       activeKey,
-      activeMenuTitle,
+      activeItem,
+      activeTitle,
       username,
       menuOptions: routerStore.menus,
       logout: () => {
@@ -110,14 +140,9 @@ export default defineComponent({
         });
       },
       handleUpdateValue: (key: string, item: MenuItem) => {
-        activeKey = key;
-        if(typeof item.label === 'function') {
-          debugger
-          activeMenuTitle = item.label().children.default() || ''
-        } else {
-          activeMenuTitle = item.label;
-        }
-        console.log(activeMenuTitle);
+        activeKey = ref(key);
+        activeItem.item = item
+        console.log(activeItem);
       },
     };
   },
