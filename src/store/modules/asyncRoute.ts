@@ -26,7 +26,7 @@ export interface IAsyncRouteState {
 }
 
 interface RouteItem {
-  id: string,
+  id: string;
   component: any;
   name: string;
   path: string;
@@ -73,9 +73,9 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
       component = "../../views/" + dirPath + ".vue";
       componentPath = modules[component];
     } else {
-      componentPath = import.meta.glob("../../components/layouts/RouteView.vue")[
+      componentPath = import.meta.glob(
         "../../components/layouts/RouteView.vue"
-      ];
+      )["../../components/layouts/RouteView.vue"];
     }
     const URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (s1, s2) =>
       eval(s2)
@@ -84,7 +84,7 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
       item.meta.url = URL;
     }
     const menu: RouteItem = {
-      id:item.id,
+      id: item.id,
       name: item.name,
       path: item.path,
       redirect: item.redirect,
@@ -191,7 +191,6 @@ export const useAsyncRouteStore = defineStore({
           //生成路由
           let accessedRouters;
           const permissionsList = (res.menu || []).concat([]);
-          console.log(menuList);
           const routeFilter = (route) => {
             const { meta } = route;
             const { roles } = meta || {};
@@ -203,21 +202,24 @@ export const useAsyncRouteStore = defineStore({
           try {
             //过滤账户是否拥有某一个权限，并将菜单从加载列表移除
             // accessedRouters = generateChildRouters(permissionsList);
-            accessedRouters = [{
-              path: "/",
-              name: "home",
-              component: import.meta.glob("../../components/layouts/BaseLayout.vue")[
-                "../../components/layouts/BaseLayout.vue"],
-              meta: {
-                title: "首页"
+            accessedRouters = [
+              {
+                path: "/",
+                name: "home",
+                component: import.meta.glob(
+                  "../../components/layouts/BaseLayout.vue"
+                )["../../components/layouts/BaseLayout.vue"],
+                meta: {
+                  title: "首页",
+                },
+                redirect: "/dashboard/analysis",
+                children: [...generateChildRouters(permissionsList)],
               },
-              redirect: "/dashboard/analysis",
-              children: [...generateChildRouters(permissionsList)]
-            }]
+            ];
           } catch (error) {
             console.log(error);
           }
-          console.log(accessedRouters);
+          console.log(menuList);
           accessedRouters = accessedRouters.filter(routeFilter);
           this.setRouters(accessedRouters);
           console.log("accessedRouters", accessedRouters);

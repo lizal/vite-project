@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from 'path';
 import viteCompression from "vite-plugin-compression";
+import AutoImport from 'unplugin-auto-import/vite'
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir);
@@ -10,6 +11,20 @@ function pathResolve(dir: string) {
 export default defineConfig({
   plugins: [
     vue(),
+    AutoImport({
+      imports: [
+        'vue',
+        {
+          'naive-ui' : [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar'
+          ]
+        }
+      ],
+      dts: 'auto-imports.d.ts'
+    }),
     viteCompression({
       verbose: true,
       disable: false,

@@ -17,6 +17,7 @@ import {
   NIcon,
   NSpace,
   NInput,
+  NDataTable,
   NDialogProvider,
   NMessageProvider,
 } from "naive-ui";
@@ -36,6 +37,7 @@ const naive = create({
     NIcon,
     NSpace,
     NInput,
+    NDataTable,
     NDialogProvider,
     NMessageProvider,
   ],

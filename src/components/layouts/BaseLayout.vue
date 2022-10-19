@@ -40,7 +40,13 @@
           content-style="padding: 10px; background-color:#f0f2f5;"
           style="height: calc(100% - 40px) !important"
         >
-          <div style="height: calc(100% - 20px); padding: 10px; background-color: #fff; ">
+          <div
+            style="
+              height: calc(100% - 20px);
+              padding: 10px;
+              background-color: #fff;
+            "
+          >
             <router-view />
           </div>
         </n-layout-content>
@@ -51,10 +57,9 @@
 
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
-import { ref, reactive, h, computed, defineComponent } from "vue";
 import type { VNode } from "vue";
 import { useRouter } from "vue-router";
-import { useDialog, useMessage } from "naive-ui";
+import { MenuInst, useDialog, useMessage } from "naive-ui";
 import { userMainStore } from "../../store/modules/user";
 import { useAsyncRouteStoreWidthOut } from "../../store/modules/asyncRoute";
 interface MenuItem {
@@ -82,41 +87,60 @@ export default defineComponent({
     let activeKey = ref("");
     let activeItem = reactive({
       item: {
-        label: '',
-        icon: () => h('icon'),
-        key: ''
-      }
+        label: "",
+        icon: () => h("icon"),
+        key: "",
+      },
     });
-    let routerData = [] as any[]
-    routerStore.routers.forEach(item => {
-      if(item.children) {
-        routerData = routerData.concat(item.children)
+    let routerData = [] as any[];
+    routerStore.routers.forEach((item) => {
+      if (item.children) {
+        routerData = routerData.concat(item.children);
       } else {
-        routerData.push(item)
+        routerData.push(item);
       }
     });
-    routerData.forEach(item => {
-      if(item.path === router.currentRoute.value.path) {
-        activeKey = ref(item.id)
-        activeItem = reactive({
-          item: {
-            label: item.meta.title,
-            icon: () => h('icon'),
-            key: item.id
+    const menuInstRef = ref<MenuInst | null>(null);
+    routerData.forEach((item) => {
+      if (!item.children) {
+        if (item.path === router.currentRoute.value.path) {
+          activeKey = ref(item.id);
+          activeItem = reactive({
+            item: {
+              label: item.meta.title,
+              icon: () => h("icon"),
+              key: item.id,
+            },
+          });
+          menuInstRef.value?.showOption(item.id);
+        }
+      } else {
+        item.children.forEach((iItem) => {
+          if (iItem.path === router.currentRoute.value.path) {
+            activeKey = ref(iItem.id);
+            activeItem = reactive({
+              item: {
+                label: iItem.meta.title,
+                icon: () => h("icon"),
+                key: iItem.id,
+              },
+            });
+            menuInstRef.value?.showOption(iItem.id);
           }
         });
       }
     });
-    let activeTitle = computed(()=> {
-      const item = activeItem.item as MenuItem
-      let title = ''
-      if( typeof item.label === 'string') {
-        title = item.label
+    let activeTitle = computed(() => {
+      const item = activeItem.item as MenuItem;
+      let title = "";
+      if (typeof item.label === "string") {
+        title = item.label;
       } else {
-        title = item.label().children.default() || ''
+        title = item.label().children.default() || "";
       }
-      return title
-    })
+      return title;
+    });
+    console.log(routerStore);
     return {
       activeKey,
       activeItem,
@@ -141,7 +165,7 @@ export default defineComponent({
       },
       handleUpdateValue: (key: string, item: MenuItem) => {
         activeKey = ref(key);
-        activeItem.item = item
+        activeItem.item = item;
         console.log(activeItem);
       },
     };

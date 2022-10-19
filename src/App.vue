@@ -1,7 +1,7 @@
 <template>
   <n-message-provider>
     <n-dialog-provider>
-      <n-config-provider :theme="theme">
+      <n-config-provider :theme="theme" :locale="zhCN">
         <div id="app">
           <router-view />
         </div>
@@ -11,8 +11,7 @@
 </template>
 <script lang="ts">
 import BaseLayout from "./components/layouts/BaseLayout.vue";
-import { defineComponent, ref } from "vue";
-import { darkTheme } from "naive-ui";
+import { darkTheme, zhCN } from "naive-ui";
 
 export default defineComponent({
   components: { BaseLayout },
@@ -22,12 +21,13 @@ export default defineComponent({
       theme: ref(undefined),
     };
   },
-  // data() {
-  //   return {
-  //     darkTheme,
-  //     theme: ref(null),
-  //   };
-  // },
+  data() {
+    return {
+      zhCN,
+      // darkTheme,
+      // theme: ref(null),
+    };
+  },
 });
 </script>
 

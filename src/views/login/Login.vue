@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { defineComponent, reactive } from "vue";
 import { PersonOutline, LockClosedOutline } from "@vicons/ionicons5";
 import { ILoginParams } from "../../service/api/login/types";
 import { userMainStore } from "../../store/modules/user";

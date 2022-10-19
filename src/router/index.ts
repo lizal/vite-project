@@ -16,11 +16,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/components/layouts/RouteView.vue"),
     children: [
       {
-        path: '/user/login',
-        name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/login/Login.vue')
-      }
-    ]
+        path: "/user/login",
+        name: "login",
+        component: () =>
+          import(/* webpackChunkName: "user" */ "@/views/login/Login.vue"),
+      },
+    ],
   },
   {
     path: "/404",

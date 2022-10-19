@@ -17,6 +17,7 @@
     "naive-ui": "^2.23.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.0-rc.10",
+    "unplugin-auto-import": "^0.11.2",
     "vfonts": "^0.1.0",
     "vue": "^3.2.23",
     "vue-router": "^4.0.12"
