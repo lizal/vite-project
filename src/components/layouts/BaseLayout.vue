@@ -26,6 +26,7 @@
         :native-scrollbar="false"
       >
         <n-menu
+          ref="menuInstRef"
           v-model:value="activeKey"
           :accordion="true"
           :options="menuOptions"
@@ -58,8 +59,7 @@
 <script lang="ts">
 import { ExitOutline } from "@vicons/ionicons5";
 import type { VNode } from "vue";
-import { useRouter } from "vue-router";
-import { MenuInst, useDialog, useMessage } from "naive-ui";
+import { MenuInst } from "naive-ui";
 import { userMainStore } from "../../store/modules/user";
 import { useAsyncRouteStoreWidthOut } from "../../store/modules/asyncRoute";
 interface MenuItem {

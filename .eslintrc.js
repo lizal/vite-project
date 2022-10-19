@@ -60,6 +60,8 @@ module.exports = {
     "no-mixed-spaces-and-tabs": "warn",
     //关闭驼峰命名规则
     "vue/multi-word-component-names": 0,
+    //关闭vue未声明
+    "no-unref": "off"
   },
   globals: {
     defineProps: "readonly",
