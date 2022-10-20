@@ -27,7 +27,7 @@ export const userMainStore = defineStore({
             );
             localStorage.setItem(
               "X-Access-Token",
-              JSON.stringify(res.result.token)
+              res.result.token
             );
             resolve(res.result);
           } else {

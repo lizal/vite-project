@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import type { DataTableRowKey } from "naive-ui";
+import http from "@/service/http";
+import { ResType } from "@/service/type";
+
 type rowData = {
   id?: string | number;
 };
@@ -20,6 +23,7 @@ const props = defineProps({
     default: () => [],
   },
 });
+const loading = reactive({load: false})
 const { columns, data } = toRefs(props);
 const columnsData = reactive({ data: columns });
 const dataSource = reactive({ data });
@@ -38,6 +42,19 @@ const pagination = reactive({
 });
 const rowKey = (row: rowData) => row.id;
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
+interface IDataSource<T> {
+  page: string;
+  size: string;
+  total: string;
+  records: T[];
+}
+loading.load = true
+http.get('/sys/log/list',{}).then((res: ResType<IDataSource<object>>) => {
+  loading.load = false
+  dataSource.data = (res.result || {}).records || []
+  console.log(dataSource)
+})
+
 const handleCheck = (rowKeys: DataTableRowKey[]) => {
   checkedRowKeysRef.value = rowKeys;
   console.log(rowKeys);
@@ -46,6 +63,7 @@ const handleCheck = (rowKeys: DataTableRowKey[]) => {
 
 <template>
   <n-data-table
+    :loading="loading.load"
     :columns="columnsData.data"
     :data="dataSource.data"
     :pagination="pagination"

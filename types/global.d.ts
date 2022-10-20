@@ -6,8 +6,14 @@ import type {
   FunctionalComponent,
   PropType as VuePropType,
 } from "vue";
+// import type { DialogApiInjection } from 'naive-ui/lib/dialog/src/DialogProvider'
+// import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
 
 declare global {
+  // interface Window {
+  //   $message: MessageApiInjection;
+  //   $dialog: DialogApiInjection;
+  // }
   const __APP_INFO__: {
     pkg: {
       name: string;

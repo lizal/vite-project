@@ -1,7 +1,7 @@
 <template>
   <n-message-provider>
     <n-dialog-provider>
-      <n-config-provider :theme="theme" :locale="zhCN">
+      <n-config-provider :theme="themeRef" :locale="zhCN">
         <div id="app">
           <router-view />
         </div>
@@ -18,7 +18,7 @@ export default defineComponent({
   setup() {
     return {
       darkTheme,
-      theme: ref(undefined),
+      themeRef: ref(undefined),
     };
   },
   data() {

@@ -27,7 +27,7 @@
       >
         <n-menu
           ref="menuInstRef"
-          v-model:value="activeKey"
+          v-model:value="activeKeyRef"
           :accordion="true"
           :options="menuOptions"
           @update:value="handleUpdateValue"
@@ -75,8 +75,8 @@ export default defineComponent({
     ExitOutline,
   },
   setup() {
-    const dialog = useDialog();
-    const message = useMessage();
+    window.$message = useMessage()
+    window.$dialog = useDialog()
     const userStore = userMainStore();
     const routerStore = useAsyncRouteStoreWidthOut();
     // const menuData = reactive()
@@ -84,7 +84,7 @@ export default defineComponent({
       localStorage.getItem("userInfo") || "{}"
     ).realname;
     const router = useRouter();
-    let activeKey = ref("");
+    let activeKeyRef = ref("");
     let activeItem = reactive({
       item: {
         label: "",
@@ -104,7 +104,7 @@ export default defineComponent({
     routerData.forEach((item) => {
       if (!item.children) {
         if (item.path === router.currentRoute.value.path) {
-          activeKey = ref(item.id);
+          activeKeyRef = ref(item.id);
           activeItem = reactive({
             item: {
               label: item.meta.title,
@@ -117,7 +117,7 @@ export default defineComponent({
       } else {
         item.children.forEach((iItem) => {
           if (iItem.path === router.currentRoute.value.path) {
-            activeKey = ref(iItem.id);
+            activeKeyRef = ref(iItem.id);
             activeItem = reactive({
               item: {
                 label: iItem.meta.title,
@@ -142,20 +142,20 @@ export default defineComponent({
     });
     console.log(routerStore);
     return {
-      activeKey,
+      activeKeyRef,
       activeItem,
       activeTitle,
       username,
       menuOptions: routerStore.menus,
       logout: () => {
-        dialog.warning({
+        window.$dialog.warning({
           title: "提示",
           content: "确定退出登录吗？",
           negativeText: "取消",
           positiveText: "确定",
           onPositiveClick: () => {
             userStore.logout().then(() => {
-              message.success("退出登录成功");
+              window.$message.success("退出登录成功");
               router.push({
                 name: "login",
               });
@@ -164,7 +164,7 @@ export default defineComponent({
         });
       },
       handleUpdateValue: (key: string, item: MenuItem) => {
-        activeKey = ref(key);
+        activeKeyRef = ref(key);
         activeItem.item = item;
         console.log(activeItem);
       },

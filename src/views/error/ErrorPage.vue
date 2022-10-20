@@ -1,12 +1,12 @@
 <template>
-  <div>{{ content }}</div>
+  <div>{{ contentRef }}</div>
 </template>
 
 <script lang="ts">
 export default defineComponent({
   setup() {
     return {
-      content: ref(null),
+      contentRef: ref(null),
     };
   },
 });

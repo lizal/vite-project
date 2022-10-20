@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import NProgress from "nprogress";
 import { ResType } from "./type";
+import { userMainStore } from "@/store/modules/user";
 
 axios.defaults.baseURL = "/vzs";
 axios.defaults.timeout = 15000;
@@ -19,10 +20,49 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use((res: any) => {
-  if (res.data.code === 500) {
-    localStorage.setItem("token", "");
-  }
+  
   return res;
+}, (error) => {
+  if(error.response) {
+    const router = useRouter();
+    const userStore = userMainStore();
+    let data = error.response.data
+    switch (error.response.status) {
+      case 401:
+        window.$message.error("未授权，请重新登录");
+        userStore.logout().then(() => {
+          window.$message.success("退出登录成功");
+          router.push({
+            name: "login",
+          });
+        });
+        break
+      case 403:
+        window.$message.error("拒绝访问");
+        break
+      case 404:
+        window.$message.error("很抱歉，资源未找到!");
+        break
+        case 500:
+        window.$dialog.warning({
+          title: "提示",
+          content: "登录失效，请重新登录！",
+          positiveText: "确定",
+          onPositiveClick: () => {
+            userStore.logout().then(() => {
+              window.$message.success("退出登录成功");
+              router.push({
+                name: "login",
+              });
+            });
+          },
+        });
+        break;
+      default:
+        window.$message.error(data.message);
+        break
+    }
+  }
 });
 
 interface Http {
