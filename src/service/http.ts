@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import NProgress from "nprogress";
 import { ResType } from "./type";
 import { userMainStore } from "@/store/modules/user";
+import router from '@/router'
 
 axios.defaults.baseURL = "/vzs";
 axios.defaults.timeout = 15000;
@@ -24,7 +25,6 @@ axios.interceptors.response.use((res: any) => {
   return res;
 }, (error) => {
   if(error.response) {
-    const router = useRouter();
     const userStore = userMainStore();
     let data = error.response.data
     switch (error.response.status) {
@@ -33,8 +33,10 @@ axios.interceptors.response.use((res: any) => {
         userStore.logout().then(() => {
           window.$message.success("退出登录成功");
           router.push({
-            name: "login",
+            path: "/user/login",
           });
+        }).catch((error) => {
+          window.$message.error(error);
         });
         break
       case 403:
@@ -43,7 +45,7 @@ axios.interceptors.response.use((res: any) => {
       case 404:
         window.$message.error("很抱歉，资源未找到!");
         break
-        case 500:
+      case 500:
         window.$dialog.warning({
           title: "提示",
           content: "登录失效，请重新登录！",
@@ -52,8 +54,10 @@ axios.interceptors.response.use((res: any) => {
             userStore.logout().then(() => {
               window.$message.success("退出登录成功");
               router.push({
-                name: "login",
+                path: "/user/login",
               });
+            }).catch((error) => {
+              window.$message.error(error);
             });
           },
         });

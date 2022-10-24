@@ -56,7 +56,7 @@ export const userMainStore = defineStore({
             localStorage.removeItem("X-Access-Token");
             resolve(res);
           } else {
-            reject();
+            reject(res.message);
           }
         });
       });

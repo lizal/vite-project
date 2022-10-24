@@ -136,7 +136,7 @@ export default defineComponent({
       if (typeof item.label === "string") {
         title = item.label;
       } else {
-        title = item.label().children.default() || "";
+        title = (item || {}).label().children.default() || "";
       }
       return title;
     });

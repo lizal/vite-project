@@ -20,7 +20,8 @@
     "unplugin-auto-import": "^0.11.2",
     "vfonts": "^0.1.0",
     "vue": "^3.2.23",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "vue-types": "^4.2.1"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
