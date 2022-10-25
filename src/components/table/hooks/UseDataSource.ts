@@ -1,4 +1,6 @@
+import { isBoolean } from "@/utils/is";
 import { ComputedRef } from "vue";
+import { PaginationProps } from "../types/pagination";
 import { BasicTableProps } from "../types/table";
 
 export function useDataSource(
@@ -34,9 +36,27 @@ export function useDataSource(
       const { request, pagination, beforeRequest, afterRequest }: any = unref(propsRef);
       console.log(propsRef);
       if (!request) return;
-      let params = Object.assign({ page: 1, size: 10 }, opt);
+
+      let pageParams = {}
+      const { page = 1, pageSize = 10 } = unref(getPaginationInfo) as PaginationProps;
+      if((isBoolean(pagination) && !pagination) || isBoolean(getPaginationInfo)) {
+        pageParams = {}
+      } else {
+        pageParams['pageNo'] = (opt && opt.page) || page
+        pageParams['pageSize'] = pageSize
+      }
+
+      let params = { ...pageParams, opt };
       const res = await request(params);
+
+      const currentPage = Number(res.result.current);
+      const pageCount = Number(res.result.pages) || 0;
+
       dataSourceRef.value = res.result.records;
+      setPagination({
+        page: currentPage,
+        pageCount: pageCount
+      })
       emit("success", res);
     } catch (error) {
       emit("error", error);

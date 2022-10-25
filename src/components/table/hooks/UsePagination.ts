@@ -13,12 +13,13 @@ export function usePagination(refProps: ComputedRef<BasicTableProps>) {
     return {
       page: 1,
       pageSize: 10,
+      pageSlot: 7,
       showSizePicker: true,
       showQuickJumper: true,
       pageSizes: [10, 20, 50, 100],
       ...(isBoolean(pagination) ? {} : pagination),
       ...unref(configRef),
-      pageCount: unref(configRef)['total']
+      pageCount: unref(configRef)['pageCount'],
     }
   })
 

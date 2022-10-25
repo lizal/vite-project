@@ -15,14 +15,7 @@ import { Ref } from "vue";
 type rowData = {
   id?: string | number;
 };
-// interface columnItem {
-//   title?: string;
-//   key?: string;
-//   render?: () => any;
-//   type?: string;
-//   disabled?: (row: rowData) => boolean;
-//   sorter?: (row1: rowData, row2: rowData) => boolean;
-// }
+
 console.log(NDataTable)
 const basicProps = defineProps({
   ...NDataTable.props, // 这里继承原 UI 组件的 props
@@ -79,10 +72,10 @@ const basicProps = defineProps({
   canResize: propTypes.bool.def(true),
   resizeHeightOffset: propTypes.number.def(0),
 });
+const innerPropsRef = ref<Partial<BasicTableProps>>();
 const getProps = computed(() => {
-  return { ...basicProps} as BasicTableProps;
+  return { ...basicProps, ...unref(innerPropsRef)} as BasicTableProps;
 });
-console.log(getProps)
 const columnsRef = ref(unref(getProps).columns) as unknown as Ref<BasicColumn[]>;
 watch(
   () => unref(getProps).columns,
@@ -90,18 +83,13 @@ watch(
     columnsRef.value = columns;
   }
 );
-console.log('columns', unref(columnsRef))
+// console.log('columns', unref(columnsRef))
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
-// interface IDataSource<T> {
-//   page: string;
-//   size: string;
-//   total: string;
-//   records: T[];
-// }
 
 const emit = defineEmits(['success', 'error'])
 const { setLoading } = useLoading(getProps)
 const { getPaginationInfo, setPagination } = usePagination(getProps)
+
 const { getDataSourceRef, reload } = useDataSource(getProps, { getPaginationInfo, setPagination, setLoading }, emit)
 
 const getBindValues = computed(() => {
@@ -113,30 +101,28 @@ const getBindValues = computed(() => {
     remote: true,
   }
 })
-
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  showSizePicker: true,
-  showQuickJumper: true,
-  pageSizes: [10, 20, 50, 100],
+const pagination = computed(() => toRaw({
+  ...unref(getPaginationInfo),
   prefix: (info: PaginationInfo) => {
-    console.log(info)
-    return h('span', null, `${info.pageCount}-${info.pageCount + info.endIndex}共${unref(getDataSourceRef).length}条`)
+    return h('span', null, `${info.pageSize * (info.page - 1) + 1}-${1 + info.endIndex}共${info.itemCount}条`)
   },
   suffix: () => {
     return h('span', null, '页')
   },
   onChange: (page: number) => {
-    pagination.page = page;
+    setPagination({
+      page: page
+    })
     reload()
   },
   onUpdatePageSize: (pageSize: number) => {
-    pagination.pageSize = pageSize;
-    pagination.page = 1;
+    setPagination({
+      pageSize: pageSize,
+      page: 1
+    })
     reload()
-  },
-});
+  }
+}));
 
 
 const handleCheck = (rowKeys: DataTableRowKey[]) => {
@@ -146,6 +132,9 @@ const handleCheck = (rowKeys: DataTableRowKey[]) => {
 // const handleEdit = (row: rowData) => {
 
 // }
+defineExpose({
+  reload
+})
 </script>
 
 <template>

@@ -46,6 +46,7 @@
               height: calc(100% - 20px);
               padding: 10px;
               background-color: #fff;
+              overflow: auto;
             "
           >
             <router-view />
