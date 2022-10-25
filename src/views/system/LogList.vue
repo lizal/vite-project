@@ -5,22 +5,27 @@
         <n-input v-model:value="queryForm.logContent" @change="handleQuery"></n-input>
       </n-form-item>
       <n-form-item label="创建时间">
-        <n-date-picker v-model:value="queryForm.range" type="daterange"></n-date-picker>
+        <n-date-picker v-model:value="queryForm.range" type="daterange" @change="handleQuery"></n-date-picker>
       </n-form-item>
     </n-form>
   </div>
   <div>
-    <BasicTable :columns="columns" :data="dataReactive.data" :loadData="loadTableData"></BasicTable>
+    <BasicTable ref="tableRef" :columns="columns" :request="loadTableData"></BasicTable>
   </div>
 </template>
 
 <script lang="ts" setup>
 import BasicTable from "@/components/table/BasicTable.vue";
+import dayjs from 'dayjs'
 import http from "@/service/http";
-
+const tableRef = ref();
+console.log(tableRef)
+// 请求参数、表头数据、请求、刷新数据、其他操作
 const queryForm = reactive({
   logContent: '',
-  range: [1663135260000, Date.now()]
+  range: [1663135260000, Date.now()],
+  createTime_begin: '',
+  createTime_end: ''
 })
 const columns = [
   {
@@ -56,12 +61,16 @@ const columns = [
     key: "actions",
   },
 ];
-const dataReactive = reactive({data: []});
 const url = "/sys/log/list"
 const loadTableData = async (res) => {
-  return await http.get(url, { ...queryForm, ...res });
+  return await http.get(url, {
+    logContent: queryForm.logContent,
+    createTime_begin: dayjs(queryForm.range[0]).format('YYYY-MM-DD') || '',
+    createTime_end: dayjs(queryForm.range[1]).format('YYYY-MM-DD') || '',
+    ...res
+  });
 };
 const handleQuery = () => {
-  
+  tableRef.value.reload()
 }
 </script>

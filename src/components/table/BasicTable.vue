@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import type { DataTableRowKey } from "naive-ui";
+import type { DataTableRowKey, PaginationInfo } from "naive-ui";
 // import { NDataTable } from "naive-ui";
 import type { TableBaseColumn } from 'naive-ui/lib/data-table/src/interface';
 import { propTypes } from '@/utils/propTypes';
-import { BasicTableProps } from "./types/table";
+import { BasicColumn, BasicTableProps } from "./types/table";
 import { useDataSource } from './hooks/UseDataSource'
+import { usePagination } from './hooks/UsePagination'
 import { useLoading } from './hooks/UseLoading'
 import { NDataTable } from "naive-ui/lib";
+import { Ref } from "vue";
 
 // import { ResType } from "@/service/type";
 
@@ -22,7 +24,7 @@ type rowData = {
 //   sorter?: (row1: rowData, row2: rowData) => boolean;
 // }
 console.log(NDataTable)
-const basicProps = {
+const basicProps = defineProps({
   ...NDataTable.props, // 这里继承原 UI 组件的 props
   title: {
     type: String,
@@ -76,11 +78,19 @@ const basicProps = {
   },
   canResize: propTypes.bool.def(true),
   resizeHeightOffset: propTypes.number.def(0),
-};
+});
 const getProps = computed(() => {
   return { ...basicProps} as BasicTableProps;
 });
-const { columns } = unref(getProps);
+console.log(getProps)
+const columnsRef = ref(unref(getProps).columns) as unknown as Ref<BasicColumn[]>;
+watch(
+  () => unref(getProps).columns,
+  (columns) => {
+    columnsRef.value = columns;
+  }
+);
+console.log('columns', unref(columnsRef))
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 // interface IDataSource<T> {
 //   page: string;
@@ -91,12 +101,14 @@ const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
 const emit = defineEmits(['success', 'error'])
 const { setLoading } = useLoading(getProps)
-const { getDataSourceRef, reload } = useDataSource(getProps, { setLoading }, emit)
+const { getPaginationInfo, setPagination } = usePagination(getProps)
+const { getDataSourceRef, reload } = useDataSource(getProps, { getPaginationInfo, setPagination, setLoading }, emit)
 
 const getBindValues = computed(() => {
+  const tableData = unref(getDataSourceRef);
   return {
-    columns: columns,
-    data: unref(getDataSourceRef),
+    columns: unref(columnsRef),
+    data: tableData,
     rowKey: (row: rowData) => row.id,
     remote: true,
   }
@@ -106,7 +118,15 @@ const pagination = reactive({
   page: 1,
   pageSize: 10,
   showSizePicker: true,
+  showQuickJumper: true,
   pageSizes: [10, 20, 50, 100],
+  prefix: (info: PaginationInfo) => {
+    console.log(info)
+    return h('span', null, `${info.pageCount}-${info.pageCount + info.endIndex}共${unref(getDataSourceRef).length}条`)
+  },
+  suffix: () => {
+    return h('span', null, '页')
+  },
   onChange: (page: number) => {
     pagination.page = page;
     reload()

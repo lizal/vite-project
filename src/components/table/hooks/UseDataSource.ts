@@ -1,8 +1,23 @@
 import { ComputedRef } from "vue";
 import { BasicTableProps } from "../types/table";
 
-export function useDataSource (propsRef: ComputedRef<BasicTableProps>,{ setLoading }, emit) {
+export function useDataSource(
+  propsRef: ComputedRef<BasicTableProps>,
+  { getPaginationInfo, setPagination, setLoading },
+  emit
+) {
   const dataSourceRef = ref<Recordable[]>([]);
+
+  watch(
+    () => unref(propsRef).dataSource,
+    () => {
+      const { dataSource }: any = unref(propsRef);
+      dataSource && (dataSourceRef.value = dataSource);
+    },
+    {
+      immediate: true,
+    }
+  );
 
   const getDataSourceRef = computed(() => {
     const dataSource = unref(dataSourceRef);
@@ -12,20 +27,23 @@ export function useDataSource (propsRef: ComputedRef<BasicTableProps>,{ setLoadi
     return unref(dataSourceRef);
   });
 
-  async function loadData (opt?) {
+  async function loadData(opt?) {
     try {
-      setLoading(true)
+      debugger;
+      setLoading(true);
       const { request, pagination, beforeRequest, afterRequest }: any = unref(propsRef);
-      if(!request) return
-      let params = Object.assign({page: 1, size: 10},opt)
+      console.log(propsRef);
+      if (!request) return;
+      let params = Object.assign({ page: 1, size: 10 }, opt);
       const res = await request(params);
       dataSourceRef.value = res.result.records;
-      emit('success', res)
+      emit("success", res);
     } catch (error) {
-      emit('error', error)
+      emit("error", error);
+      console.log(error);
       dataSourceRef.value = [];
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -35,9 +53,8 @@ export function useDataSource (propsRef: ComputedRef<BasicTableProps>,{ setLoadi
     }, 16);
   });
 
-
   async function reload(opt?) {
-    await loadData(opt)
+    await loadData(opt);
   }
 
   function getDataSource(): any[] {
@@ -49,5 +66,5 @@ export function useDataSource (propsRef: ComputedRef<BasicTableProps>,{ setLoadi
     getDataSource,
     loadData,
     reload,
-  }
+  };
 }

@@ -14,6 +14,7 @@
     "@vicons/ionicons4": "^0.11.0",
     "@vicons/ionicons5": "^0.11.0",
     "axios": "^0.24.0",
+    "dayjs": "^1.11.6",
     "naive-ui": "^2.33.5",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.0-rc.10",
