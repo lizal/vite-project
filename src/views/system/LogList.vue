@@ -19,8 +19,7 @@ import BasicTable from "@/components/table/BasicTable.vue";
 import dayjs from 'dayjs'
 import http from "@/service/http";
 import { ref } from 'vue'
-let tableRef = ref(null);
-console.log(tableRef.value)
+let tableRef = ref();
 // 请求参数、表头数据、请求、刷新数据、其他操作
 const queryForm = reactive({
   logContent: '',
