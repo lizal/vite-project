@@ -174,7 +174,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .n-layout,
 .n-layout-sider {
   height: 100% !important;

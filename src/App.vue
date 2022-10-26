@@ -31,7 +31,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
 html,
 body {
   height: 100%;

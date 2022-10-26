@@ -62,7 +62,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .login-wrap {
   position: absolute;
   left: 50%;
