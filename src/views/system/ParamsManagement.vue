@@ -52,15 +52,21 @@
     </modal>
   </div>
   <div>
-    <BasicTable ref="tableRef" :columns="columns" :request="loadTableData"></BasicTable>
+    <BasicTable ref="tableRef" :columns="columns" :request="loadTableData" @selectRowChange="getSelectRowKeys"></BasicTable>
   </div>
+  <modal :title="'详情'" :show="showDetail" :footer="false">
+    <n-grid :x-gap="12" :y-gap="8" :cols="2">
+      <n-grid-item>编号：{{detailData.dictCode}}</n-grid-item>
+      <n-grid-item>名称：{{}}</n-grid-item>
+    </n-grid>
+  </modal>
 </template>
 
 <script lang="ts" setup>
 import BasicTable from "@/components/table/BasicTable.vue";
 import Modal from "@/components/modal/Index.vue"
 import http from "@/service/http";
-import { NAvatar, NEllipsis } from "naive-ui";
+import { NAvatar, NButton, NEllipsis, NSpace } from "naive-ui";
 import { ref } from 'vue'
 
 import { AddOutline, TrashOutline } from '@vicons/ionicons5'
@@ -94,7 +100,12 @@ const rules = {
   }
 }
 const deleteDisabeld = ref(true)
+console.log(tableRef.value)
 const showModal = ref(false)
+const showDetail = ref(false)
+const detailData = ref({
+  dictCode: ''
+})
 const columns = [
   {
     type: 'selection'
@@ -138,7 +149,34 @@ const columns = [
   {
     title: "描述",
     key: "description",
-  }
+  },
+  {
+    title: "操作",
+    key: "actions",
+    render (row) {
+      const btns =  [
+        h(NButton, {
+          text: true,
+          tag: 'a',
+          'text-color': '#18a058',
+          onClick: () => handleEdit(row)
+        },{
+          default: () => '编辑'
+        }),
+        h(NButton, {
+          text: true,
+          tag: 'a',
+          'text-color': '#18a058',
+          onClick: () => handleDetail(row)
+        },{
+          default: () => '详情'
+        })
+      ]
+      return h(NSpace, {
+
+      }, {default: () => btns})
+    }
+  },
 ];
 const loadTableData = async (res) => {
   return await http.get("/sys/para/list", {
@@ -156,5 +194,23 @@ const handleCancel = () => {
 }
 const handleSubmit = () => {
   showModal.value = false
+  http.post('/sys/para/add')
+}
+
+const getSelectRowKeys = (keys) => {
+  if(keys && keys.length) {
+    deleteDisabeld.value = false
+  } else {
+    deleteDisabeld.value = true
+  }
+}
+
+const handleEdit = (row) => {
+  console.log(row)
+}
+
+const handleDetail = (row) => {
+  showDetail.value = true
+  detailData.value = row
 }
 </script>

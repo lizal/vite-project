@@ -11,6 +11,8 @@ import {
   NLayoutHeader,
   NLayoutFooter,
   NLayoutContent,
+  NGrid,
+  NGridItem,
   NMenu,
   NBreadcrumb,
   NBreadcrumbItem,
@@ -25,10 +27,12 @@ import {
   NDatePicker,
   NDataTable,
   NModal,
+  NDrawer,
+  NDrawerContent,
   NAvatar,
   NEllipsis,
   NDialogProvider,
-  NMessageProvider,
+  NMessageProvider
 } from "naive-ui";
 
 const naive = create({
@@ -40,6 +44,8 @@ const naive = create({
     NLayoutHeader,
     NLayoutFooter,
     NLayoutContent,
+    NGrid,
+    NGridItem,
     NMenu,
     NBreadcrumb,
     NBreadcrumbItem,
@@ -54,6 +60,8 @@ const naive = create({
     NDatePicker,
     NDataTable,
     NModal,
+    NDrawer,
+    NDrawerContent,
     NAvatar,
     NEllipsis,
     NDialogProvider,

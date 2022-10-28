@@ -86,7 +86,7 @@ watch(
 // console.log('columns', unref(columnsRef))
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
-const emit = defineEmits(['success', 'error'])
+const emit = defineEmits(['success', 'error','select-row-change'])
 const { setLoading } = useLoading(getProps)
 const { getPaginationInfo, setPagination } = usePagination(getProps)
 
@@ -128,6 +128,7 @@ const pagination = computed(() => toRaw({
 const handleCheck = (rowKeys: DataTableRowKey[]) => {
   checkedRowKeysRef.value = rowKeys;
   console.log(rowKeys);
+  emit('select-row-change', rowKeys)
 };
 // const handleEdit = (row: rowData) => {
 

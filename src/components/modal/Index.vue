@@ -10,6 +10,10 @@ const basicProps = defineProps({
     type: Boolean,
     default: true
   },
+  footer: {
+    type: Boolean,
+    default: true
+  },
   cancelText: {
     type: String,
     default: '取消'
@@ -23,22 +27,41 @@ const basicProps = defineProps({
     default: ''
   },
   width: {
-    type: Number || String,
+    type: [Number, String],
     default: 800
-  },
-  cancel: {
-    type: Function,
-    default: () => {}
   },
   ok: {
     type: Function,
     default: () => {}
+  },
+  cancel: {
+    type: Function,
+    default: () => {}
   }
 })
-
 const props = computed(()=> {
   return {...basicProps}
 })
+
+const emit = defineEmits(['ok', 'cancel'])
+
+const show = ref(props.value.show)
+
+const ok = () => {
+  if(props.value.ok) {
+    emit('ok')
+  } else {
+    show.value = false
+  }
+}
+const cancel = () => {
+  if(props.value.cancel) {
+    emit('cancel')
+  } else {
+    show.value = false
+  }
+}
+console.log(props.value.cancel)
 </script>
 
 <template>
@@ -46,7 +69,7 @@ const props = computed(()=> {
      <div class="modal-wrapper" :style="{'width': typeof props.width === 'number'? props.width + 'px' : props.width}">
       <div class="modal-header">
         <div class="modal-title">{{props.title}}</div>
-        <div class="modal-icon" @click="props.cancel">
+        <div class="modal-icon" @click="cancel">
           <n-icon :size="28">
             <close-outline/>
           </n-icon>
@@ -56,9 +79,12 @@ const props = computed(()=> {
         <slot></slot>
       </div>
       <div class="modal-footer">
-        <n-space justify="end">
-          <n-button @click="props.cancel">{{props.cancelText}}</n-button>
-          <n-button type="primary" @click="props.ok">{{props.okText}}</n-button>
+        <div>
+          <slot name="footer"></slot>
+        </div>
+        <n-space justify="end" v-if="props.footer">
+          <n-button @click="cancel">{{props.cancelText}}</n-button>
+          <n-button type="primary" @click="ok">{{props.okText}}</n-button>
         </n-space>
       </div>
      </div>
