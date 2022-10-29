@@ -32,20 +32,25 @@ const basicProps = defineProps({
   },
   ok: {
     type: Function,
-    default: () => {}
+    default: null,
   },
   cancel: {
     type: Function,
-    default: () => {}
+    default: null,
   }
 })
 const props = computed(()=> {
   return {...basicProps}
 })
 
+console.log(props.value)
 const emit = defineEmits(['ok', 'cancel'])
 
-const show = ref(props.value.show)
+const show = ref(false)
+
+watch(() => props.value, (val) => {
+  show.value = val.show
+})
 
 const ok = () => {
   if(props.value.ok) {
@@ -60,8 +65,8 @@ const cancel = () => {
   } else {
     show.value = false
   }
+  console.log(show.value)
 }
-console.log(props.value.cancel)
 </script>
 
 <template>

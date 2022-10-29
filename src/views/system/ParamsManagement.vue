@@ -26,7 +26,7 @@
       </n-button>
     </n-space>
     
-    <modal :title="'新增'" :show="showModal" :ok="handleSubmit" :cancel="handleCancel">
+    <modal :title="'新增'" :show="showModal" @ok="handleSubmit">
       <n-form ref="add" :model="addForm" :rules="rules" label-placement="left" label-width="120px" require-mark-placement="right-hanging">
         <n-form-item label="编号" path="code">
           <n-input v-model:value="addForm.code"></n-input>
@@ -188,10 +188,10 @@ const handleQuery = () => {
   tableRef.value.reload()
 }
 
-const handleCancel = () => {
-  debugger
-  showModal.value = false
-}
+// const handleCancel = () => {
+//   debugger
+//   showModal.value = false
+// }
 const handleSubmit = () => {
   showModal.value = false
   http.post('/sys/para/add')
