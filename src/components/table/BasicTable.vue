@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import type { DataTableRowKey, PaginationInfo } from "naive-ui";
-// import { NDataTable } from "naive-ui";
+import { NDataTable } from "naive-ui";
 import type { TableBaseColumn } from 'naive-ui/lib/data-table/src/interface';
 import { propTypes } from '@/utils/propTypes';
 import { BasicColumn, BasicTableProps } from "./types/table";
 import { useDataSource } from './hooks/UseDataSource'
 import { usePagination } from './hooks/UsePagination'
 import { useLoading } from './hooks/UseLoading'
-import { NDataTable } from "naive-ui/lib";
 import { Ref } from "vue";
 
 // import { ResType } from "@/service/type";
@@ -101,8 +100,12 @@ const getBindValues = computed(() => {
     remote: true,
   }
 })
-const pagination = computed(() => toRaw({
-  ...unref(getPaginationInfo),
+
+const pagination = computed(() => {
+  const data = unref(getPaginationInfo)
+  console.log(data)
+  return toRaw({
+  ...data,
   prefix: (info: PaginationInfo) => {
     return h('span', null, `${info.pageSize * (info.page - 1) + 1}-${1 + info.endIndex}共${info.itemCount}条`)
   },
@@ -122,7 +125,8 @@ const pagination = computed(() => toRaw({
     })
     reload()
   }
-}));
+  })
+});
 
 
 const handleCheck = (rowKeys: DataTableRowKey[]) => {

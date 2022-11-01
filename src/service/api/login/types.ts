@@ -1,6 +1,6 @@
 export interface ILoginParams {
   username: string;
-  password: string | number;
+  password: string;
 }
 export interface IPermissionParams {
   token: string;

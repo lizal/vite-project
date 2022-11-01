@@ -33,7 +33,7 @@ export function useDataSource(
     try {
       debugger;
       setLoading(true);
-      const { request, pagination, beforeRequest, afterRequest }: any = unref(propsRef);
+      const { request, pagination }: any = unref(propsRef);
       console.log(propsRef);
       if (!request) return;
 

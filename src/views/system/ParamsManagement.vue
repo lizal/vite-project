@@ -8,7 +8,7 @@
   </div>
   <div style="margin-bottom: 10px;">
     <n-space>
-      <n-button type="primary" @click="showModal = true">
+      <n-button type="primary" @click="handleAdd">
         <template #icon>
           <n-icon>
             <add-outline />
@@ -26,45 +26,30 @@
       </n-button>
     </n-space>
     
-    <modal :title="'新增'" :show="showModal" @ok="handleSubmit">
-      <n-form ref="add" :model="addForm" :rules="rules" label-placement="left" label-width="120px" require-mark-placement="right-hanging">
-        <n-form-item label="编号" path="code">
-          <n-input v-model:value="addForm.code"></n-input>
-        </n-form-item>
-        <n-form-item label="名称" path="name">
-          <n-input v-model:value="addForm.name"></n-input>
-        </n-form-item>
-        <n-form-item label="类型选择">
-          <n-radio-group v-model:value="addForm.type">
-            <n-space>
-              <n-radio value="0">文本</n-radio>
-              <n-radio value="1">图片</n-radio>
-            </n-space>
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item label="值" path="value">
-          <n-input v-model:value="addForm.value" type="textarea"></n-input>
-        </n-form-item>
-        <n-form-item label="描述">
-          <n-input v-model:value="addForm.description" type="textarea"></n-input>
-        </n-form-item>
-      </n-form>
-    </modal>
+    <param-modal ref="addModal"></param-modal>
   </div>
   <div>
     <BasicTable ref="tableRef" :columns="columns" :request="loadTableData" @selectRowChange="getSelectRowKeys"></BasicTable>
   </div>
-  <modal :title="'详情'" :show="showDetail" :footer="false">
+  <modal ref="detailModal" :title="'详情'" :footer="false">
     <n-grid :x-gap="12" :y-gap="8" :cols="2">
-      <n-grid-item>编号：{{detailData.dictCode}}</n-grid-item>
-      <n-grid-item>名称：{{}}</n-grid-item>
+      <n-grid-item>编号：{{detailData.code}}</n-grid-item>
+      <n-grid-item>名称：{{detailData.name}}</n-grid-item>
+      <n-grid-item>创建人：{{detailData.createBy}}</n-grid-item>
+      <n-grid-item>创建时间：{{detailData.createTime}}</n-grid-item>
+      <n-grid-item v-if="detailData.value.indexOf('data:image/') === 0" style="display: flex;">图片：<img :src="detailData.value" style="max-width: calc(100% - 50px);" /></n-grid-item>
+      <n-grid-item v-else style="display: flex;">值：<n-ellipsis :line-clamp="4">{{detailData.value}}</n-ellipsis></n-grid-item>
+      <n-grid-item>更新人：{{detailData.updateBy}}</n-grid-item>
+      <n-grid-item>更新时间：{{detailData.updateTime}}</n-grid-item>
+      <n-grid-item>描述：{{detailData.description}}</n-grid-item>
     </n-grid>
   </modal>
 </template>
 
 <script lang="ts" setup>
-import BasicTable from "@/components/table/BasicTable.vue";
 import Modal from "@/components/modal/Index.vue"
+import BasicTable from "@/components/table/BasicTable.vue";
+import ParamModal from "./modules/ParamModal.vue";
 import http from "@/service/http";
 import { NAvatar, NButton, NEllipsis, NSpace } from "naive-ui";
 import { ref } from 'vue'
@@ -75,36 +60,19 @@ let tableRef = ref();
 const queryForm = reactive({
   logContent: '',
 })
-const addForm = ref({
+
+const deleteDisabeld = ref(true)
+const addModal = ref()
+const detailModal = ref()
+const detailData = ref({
   code: '',
   name: '',
-  type: '0',
+  createBy: '',
+  createTime: '',
   value: '',
+  updateBy: '',
+  updateTime: '',
   description: ''
-})
-const rules = {
-  code: {
-    required: true,
-    trigger: ['blur', 'input'],
-    message: '必填项'
-  },
-  name: {
-    required: true,
-    trigger: ['blur', 'input'],
-    message: '必填项'
-  },
-  value: {
-    required: true,
-    trigger: ['blur', 'input'],
-    message: '必填项'
-  }
-}
-const deleteDisabeld = ref(true)
-console.log(tableRef.value)
-const showModal = ref(false)
-const showDetail = ref(false)
-const detailData = ref({
-  dictCode: ''
 })
 const columns = [
   {
@@ -188,14 +156,10 @@ const handleQuery = () => {
   tableRef.value.reload()
 }
 
-// const handleCancel = () => {
-//   debugger
-//   showModal.value = false
-// }
-const handleSubmit = () => {
-  showModal.value = false
-  http.post('/sys/para/add')
+const handleAdd = () => {
+  addModal.value.show()
 }
+
 
 const getSelectRowKeys = (keys) => {
   if(keys && keys.length) {
@@ -206,11 +170,14 @@ const getSelectRowKeys = (keys) => {
 }
 
 const handleEdit = (row) => {
-  console.log(row)
+  console.log(addModal.value.show)
+  addModal.value.show(row)
+  // addForm.value = row
 }
 
 const handleDetail = (row) => {
-  showDetail.value = true
-  detailData.value = row
+  console.log(row)
+  detailModal.value.show()
+  detailData.value = unref(row)
 }
 </script>

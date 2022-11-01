@@ -9,8 +9,8 @@ import type { VNode } from "vue";
 
 import {
   BookOutline as BookIcon,
-  PersonOutline as PersonIcon,
-  WineOutline as WineIcon,
+  // PersonOutline as PersonIcon,
+  // WineOutline as WineIcon,
 } from "@vicons/ionicons5";
 
 function renderIcon(icon: any) {
@@ -77,7 +77,7 @@ function generateChildRouters<T extends RouteItem>(data: T[]): T[] {
         "../../components/layouts/RouteView.vue"
       )["../../components/layouts/RouteView.vue"];
     }
-    const URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (s1, s2) =>
+    const URL = (item.meta.url || "").replace(/{{([^}}]+)?}}/g, (_s1, s2) =>
       eval(s2)
     ); // URL支持{{ window.xxx }}占位符变量
     if (isURL(URL)) {

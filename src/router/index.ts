@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: "home",
     redirect: "/dashboard/analysis",
     component: () => import("@/components/layouts/BaseLayout.vue"),
+    children: [],
   },
   {
     path: "/user",

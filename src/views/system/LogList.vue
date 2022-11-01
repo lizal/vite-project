@@ -5,7 +5,7 @@
         <n-input v-model:value="queryForm.logContent" clearable @change="handleQuery"></n-input>
       </n-form-item>
       <n-form-item label="创建时间">
-        <n-date-picker v-model:value="queryForm.range" type="daterange" @update:value="handleQuery"></n-date-picker>
+        <n-date-picker v-model:value="range" type="daterange" @update:value="handleQuery"></n-date-picker>
       </n-form-item>
     </n-form>
   </div>
@@ -21,9 +21,9 @@ import http from "@/service/http";
 import { ref } from 'vue'
 let tableRef = ref();
 // 请求参数、表头数据、请求、刷新数据、其他操作
+const range = ref<[number, number]>([1663135260000, Date.now()])
 const queryForm = reactive({
   logContent: '',
-  range: [1663135260000, Date.now()],
   createTime_begin: '',
   createTime_end: ''
 })
@@ -64,8 +64,8 @@ const columns = [
 const loadTableData = async (res) => {
   return await http.get("/sys/log/list", {
     logContent: queryForm.logContent,
-    createTime_begin: dayjs(queryForm.range[0]).format('YYYY-MM-DD') || '',
-    createTime_end: dayjs(queryForm.range[1]).format('YYYY-MM-DD') || '',
+    createTime_begin: dayjs(range[0]).format('YYYY-MM-DD') || '',
+    createTime_end: dayjs(range[1]).format('YYYY-MM-DD') || '',
     ...res
   });
 };

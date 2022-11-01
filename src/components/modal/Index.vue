@@ -29,48 +29,39 @@ const basicProps = defineProps({
   width: {
     type: [Number, String],
     default: 800
-  },
-  ok: {
-    type: Function,
-    default: null,
-  },
-  cancel: {
-    type: Function,
-    default: null,
   }
 })
 const props = computed(()=> {
   return {...basicProps}
 })
 
-console.log(props.value)
 const emit = defineEmits(['ok', 'cancel'])
 
-const show = ref(false)
+const showModal = ref(false)
 
 watch(() => props.value, (val) => {
-  show.value = val.show
+  showModal.value = val.show
 })
 
+const show = () => {
+  showModal.value = true
+}
 const ok = () => {
-  if(props.value.ok) {
-    emit('ok')
-  } else {
-    show.value = false
-  }
+  emit('ok')
+  showModal.value = false
 }
 const cancel = () => {
-  if(props.value.cancel) {
-    emit('cancel')
-  } else {
-    show.value = false
-  }
-  console.log(show.value)
+  emit('cancel')
+  showModal.value = false
 }
+
+defineExpose({
+  show
+})
 </script>
 
 <template>
-  <n-modal v-model:show="show" :mask-closable="props.maskClosable">
+  <n-modal v-model:show="showModal" :mask-closable="props.maskClosable">
      <div class="modal-wrapper" :style="{'width': typeof props.width === 'number'? props.width + 'px' : props.width}">
       <div class="modal-header">
         <div class="modal-title">{{props.title}}</div>
