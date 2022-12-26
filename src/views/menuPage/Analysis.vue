@@ -4,13 +4,7 @@
   <n-button @click="themeRef = undefined">浅色</n-button>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  setup() {
-    return {
-      contentRef: ref(null),
-      themeRef: ref(undefined),
-    };
-  },
-});
+<script lang="ts" setup>
+const contentRef = ref(null)
+const themeRef = ref(undefined)
 </script>

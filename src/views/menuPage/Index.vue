@@ -1,23 +1,13 @@
 <template>
   <n-button @click="themeRef = undefined">深色</n-button>
   <n-button @click="themeRef = undefined">浅色</n-button>
+  <div>123</div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { darkTheme } from "naive-ui";
-export default defineComponent({
-  setup() {
-    return {
-      darkTheme,
-      themeRef: ref(undefined),
-    };
-  },
-  // data() {
-  //   return {
-  //     // darkTheme,
-  //     // theme: ref(null),
-  //   };
-  // },
-});
+const darkTheme = ref(darkTheme)
+const themeRef = ref(undefined)
+
 </script>
 
 <style lang="scss">

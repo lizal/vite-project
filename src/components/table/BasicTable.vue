@@ -57,7 +57,7 @@ const basicProps = defineProps({
   },
   pagination: {
     type: [Object, Boolean],
-    default: () => {},
+    default: () => { },
   },
   //废弃
   showPagination: {
@@ -73,7 +73,7 @@ const basicProps = defineProps({
 });
 const innerPropsRef = ref<Partial<BasicTableProps>>();
 const getProps = computed(() => {
-  return { ...basicProps, ...unref(innerPropsRef)} as BasicTableProps;
+  return { ...basicProps, ...unref(innerPropsRef) } as BasicTableProps;
 });
 const columnsRef = ref(unref(getProps).columns) as unknown as Ref<BasicColumn[]>;
 watch(
@@ -85,7 +85,7 @@ watch(
 // console.log('columns', unref(columnsRef))
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
-const emit = defineEmits(['success', 'error','select-row-change'])
+const emit = defineEmits(['success', 'error', 'select-row-change'])
 const { setLoading } = useLoading(getProps)
 const { getPaginationInfo, setPagination } = usePagination(getProps)
 
@@ -105,26 +105,26 @@ const pagination = computed(() => {
   const data = unref(getPaginationInfo)
   console.log(data)
   return toRaw({
-  ...data,
-  prefix: (info: PaginationInfo) => {
-    return h('span', null, `${info.pageSize * (info.page - 1) + 1}-${1 + info.endIndex}共${info.itemCount}条`)
-  },
-  suffix: () => {
-    return h('span', null, '页')
-  },
-  onChange: (page: number) => {
-    setPagination({
-      page: page
-    })
-    reload()
-  },
-  onUpdatePageSize: (pageSize: number) => {
-    setPagination({
-      pageSize: pageSize,
-      page: 1
-    })
-    reload()
-  }
+    ...data,
+    prefix: (info: PaginationInfo) => {
+      return h('span', null, `${info.pageSize * (info.page - 1) + 1}-${1 + info.endIndex}共${info.itemCount}条`)
+    },
+    suffix: () => {
+      return h('span', null, '页')
+    },
+    onChange: (page: number) => {
+      setPagination({
+        page: page
+      })
+      reload()
+    },
+    onUpdatePageSize: (pageSize: number) => {
+      setPagination({
+        pageSize: pageSize,
+        page: 1
+      })
+      reload()
+    }
   })
 });
 
@@ -143,9 +143,5 @@ defineExpose({
 </script>
 
 <template>
-  <n-data-table
-    v-bind="getBindValues"
-    :pagination="pagination"
-    @update:checked-row-keys="handleCheck"
-  ></n-data-table>
+  <n-data-table v-bind="getBindValues" :pagination="pagination" @update:checked-row-keys="handleCheck"></n-data-table>
 </template>

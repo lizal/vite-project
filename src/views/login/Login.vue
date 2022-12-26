@@ -26,7 +26,7 @@
       </n-space>
     </n-space>
     <div class="login-btn">
-      <n-button size="large" color="#40a9ff" style="width: 100%" @click="toHome"
+      <n-button size="large" color="#18a058" style="width: 100%" @click="toHome"
         >登录</n-button
       >
     </div>
