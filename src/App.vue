@@ -1,7 +1,7 @@
 <template>
   <n-message-provider>
     <n-dialog-provider>
-      <n-config-provider :theme="darkTheme" :locale="zhCN">
+      <n-config-provider :theme="theme === 'dark' ? darkTheme : null" :locale="zhCN">
         <div id="app">
           <router-view />
         </div>
@@ -11,7 +11,7 @@
 </template>
 <script lang="ts" setup>
 import { darkTheme, zhCN } from "naive-ui";
-const themeRef = ref(undefined)
+const theme = localStorage.getItem('theme')
 </script>
 
 <style lang="scss">

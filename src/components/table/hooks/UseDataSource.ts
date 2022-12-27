@@ -52,7 +52,7 @@ export function useDataSource(
       const currentPage = Number(res.result.current);
       const pageCount = Number(res.result.pages) || 0;
 
-      dataSourceRef.value = res.result.records;
+      dataSourceRef.value = (isBoolean(pagination) && !pagination)? res.result : res.result.records;
       setPagination({
         page: currentPage,
         pageCount: pageCount

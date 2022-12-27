@@ -38,16 +38,11 @@
           <n-breadcrumb-item>{{ activeTitle }}</n-breadcrumb-item>
         </n-breadcrumb>
         <n-layout-content
-          content-style="padding: 10px; background-color:#f0f2f5;"
+          :content-style="{padding: '10px', backgroundColor:  theme === 'light' ? '#f0f2f5' : '#000'}"
           style="height: calc(100% - 40px) !important"
         >
           <div
-            style="
-              height: calc(100% - 20px);
-              padding: 10px;
-              background-color: #fff;
-              overflow: auto;
-            "
+            :class="['main-wrap', theme]"
           >
             <router-view />
           </div>
@@ -70,6 +65,8 @@
     key: string;
     children?: MenuItem[];
   }
+
+  const theme = localStorage.getItem('theme')
   window.$message = useMessage()
   window.$dialog = useDialog()
   const userStore = userMainStore();
@@ -197,5 +194,16 @@
   align-items: center;
   justify-content: flex-end;
   width: 200px;
+}
+.main-wrap {
+  height: calc(100% - 20px);
+  padding: 10px;
+  overflow: auto;
+  &.dark {
+    background-color: #101014;
+  }
+  &.light {
+    background-color: #fff;
+  }
 }
 </style>

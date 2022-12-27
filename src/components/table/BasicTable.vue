@@ -30,6 +30,10 @@ const basicProps = defineProps({
     type: String,
     default: 'medium',
   },
+  maxHeight: {
+    type: [String, Number],
+    default: null
+  },
   dataSource: {
     type: [Object],
     default: () => [],
@@ -58,11 +62,6 @@ const basicProps = defineProps({
   pagination: {
     type: [Object, Boolean],
     default: () => { },
-  },
-  //废弃
-  showPagination: {
-    type: [String, Boolean],
-    default: 'auto',
   },
   actionColumn: {
     type: Object as PropType<TableBaseColumn>,
@@ -104,7 +103,7 @@ const getBindValues = computed(() => {
 const pagination = computed(() => {
   const data = unref(getPaginationInfo)
   console.log(data)
-  return toRaw({
+  return data ? toRaw({
     ...data,
     prefix: (info: PaginationInfo) => {
       return h('span', null, `${info.pageSize * (info.page - 1) + 1}-${1 + info.endIndex}共${info.itemCount}条`)
@@ -125,7 +124,7 @@ const pagination = computed(() => {
       })
       reload()
     }
-  })
+  }) : data
 });
 
 
@@ -143,5 +142,5 @@ defineExpose({
 </script>
 
 <template>
-  <n-data-table v-bind="getBindValues" :pagination="pagination" @update:checked-row-keys="handleCheck"></n-data-table>
+  <n-data-table v-bind="getBindValues" :pagination="pagination" @update:checked-row-keys="handleCheck" :max-height="maxHeight"></n-data-table>
 </template>

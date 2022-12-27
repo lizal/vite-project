@@ -28,8 +28,8 @@
     
     <param-modal ref="addModal"></param-modal>
   </div>
-  <div>
-    <BasicTable ref="tableRef" :columns="columns" :request="loadTableData" @selectRowChange="getSelectRowKeys"></BasicTable>
+  <div style="height: calc(100% - 102px)">
+    <BasicTable ref="tableRef" :columns="columns" :request="loadTableData" @selectRowChange="getSelectRowKeys" :maxHeight="tableHeight"></BasicTable>
   </div>
   <modal ref="detailModal" :title="'详情'" :footer="false">
     <n-grid :x-gap="12" :y-gap="8" :cols="2">
@@ -60,7 +60,7 @@ let tableRef = ref();
 const queryForm = reactive({
   logContent: '',
 })
-
+const tableHeight = document.body.clientHeight - 320
 const deleteDisabeld = ref(true)
 const addModal = ref()
 const detailModal = ref()

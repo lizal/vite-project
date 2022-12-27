@@ -37,6 +37,8 @@ const props = computed(()=> {
 
 const emit = defineEmits(['ok', 'cancel'])
 
+const theme = localStorage.getItem('theme')
+
 const showModal = ref(false)
 
 watch(() => props.value, (val) => {
@@ -61,8 +63,8 @@ defineExpose({
 </script>
 
 <template>
-  <n-modal v-model:show="showModal" :mask-closable="props.maskClosable">
-     <div class="modal-wrapper" :style="{'width': typeof props.width === 'number'? props.width + 'px' : props.width}">
+  <n-modal v-model:show="showModal" :mask-closable="false">
+     <div :class="['modal-wrapper', theme]" :style="{'width': typeof props.width === 'number'? props.width + 'px' : props.width}">
       <div class="modal-header">
         <div class="modal-title">{{props.title}}</div>
         <div class="modal-icon" @click="cancel">
@@ -76,7 +78,7 @@ defineExpose({
       </div>
       <div class="modal-footer">
         <div>
-          <slot name="footer"></slot>
+          <slot name="foot"></slot>
         </div>
         <n-space justify="end" v-if="props.footer">
           <n-button @click="cancel">{{props.cancelText}}</n-button>
@@ -90,8 +92,13 @@ defineExpose({
 <style lang="scss" scoped>
   .modal-wrapper {
     padding: 20px;
-    background-color: #fff;
     border-radius: 4px;
+    &.light {
+      background-color: #fff;
+    }
+    &.dark {
+      background-color: #2c2c32;
+    }
     .modal-header {
       display: flex;
       justify-content: space-between;

@@ -1,10 +1,10 @@
 <template>
-  <div>{{ contentRef }}</div>
-  <n-button @click="themeRef = undefined">深色</n-button>
-  <n-button @click="themeRef = undefined">浅色</n-button>
+  <n-button @click="changeTheme('dark')">深色</n-button>
+  <n-button @click="changeTheme('light')">浅色</n-button>
 </template>
 
 <script lang="ts" setup>
-const contentRef = ref('main')
-const themeRef = ref(undefined)
+const changeTheme = (theme) => {
+  localStorage.setItem('theme', theme)
+}
 </script>
