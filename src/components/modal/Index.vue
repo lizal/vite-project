@@ -58,7 +58,8 @@ const cancel = () => {
 }
 
 defineExpose({
-  show
+  show,
+  cancel
 })
 </script>
 
@@ -77,10 +78,10 @@ defineExpose({
         <slot></slot>
       </div>
       <div class="modal-footer">
-        <div>
-          <slot name="foot"></slot>
-        </div>
-        <n-space justify="end" v-if="props.footer">
+        <slot name="footer"></slot>
+      </div>
+      <div v-if="props.footer" class="modal-footer">
+        <n-space justify="end" >
           <n-button @click="cancel">{{props.cancelText}}</n-button>
           <n-button type="primary" @click="ok">{{props.okText}}</n-button>
         </n-space>

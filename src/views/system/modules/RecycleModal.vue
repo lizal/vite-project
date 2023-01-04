@@ -66,6 +66,10 @@ const loadTableData = async (res) => {
 const show = () => {
   return addModal.value.show()
 }
+
+const handleClose = () => {
+  return addModal.value.cancel()
+}
 defineExpose({
   show
 })
@@ -74,8 +78,8 @@ defineExpose({
 <template>
   <modal ref="addModal" :title="''" :width="1400" :footer="false">
     <BasicTable ref="tableRef" :columns="columns" :request="loadTableData" :pagination="false" :maxHeight="600"></BasicTable>
-    <template slot="foot">
-      <n-button>关闭</n-button>
+    <template #footer>
+      <n-button @click="handleClose">关闭</n-button>
     </template>
   </modal>
 </template>
