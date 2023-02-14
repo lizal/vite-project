@@ -13,8 +13,10 @@ import {
   // WineOutline as WineIcon,
 } from "@vicons/ionicons5";
 
-function renderIcon(icon: any) {
-  return () => h(NIcon, null, { default: () => h(icon) });
+
+const renderIcon = async (icon) => {
+  const { [icon]: iconComponent } = await import("@vicons/ionicons5")
+  return () => h(NIcon, null, { default: () => h(iconComponent) });
 }
 
 export interface IAsyncRouteState {
@@ -34,7 +36,7 @@ interface RouteItem {
   meta: {
     url: string;
     title: string;
-    icon?: string;
+    icon?: string|(() => VNode);
     hidden?: boolean;
     keepAlive: boolean;
     internalOrExternal?: boolean;
@@ -119,28 +121,29 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-function revertMenu(menuData) {
+const getMenuOption = (menu: RouteItem) => ({
+  label: menu.children
+    ? menu.meta.title
+    : () =>
+        h(
+          RouterLink,
+          {
+            to: {
+              path: menu.path,
+            },
+          },
+          { default: () => menu.meta.title }
+        ),
+  icon: () => h(NIcon, null, BookIcon),
+  // icon: await renderIcon(menu.meta.icon),
+  key: menu.id,
+})
+
+const revertMenu = (menuData) => {
   const resultData = [] as MenuItem[];
-  menuData.forEach((item) => {
+  menuData.forEach(async (item) => {
     if (!item.hidden) {
-      const menu: MenuItem = {
-        label: item.children
-          ? item.meta.title
-          : () =>
-              h(
-                RouterLink,
-                {
-                  to: {
-                    path: item.path,
-                    // title: item.meta.title
-                  },
-                },
-                { default: () => item.meta.title }
-              ),
-        // label: item.meta.title,
-        icon: renderIcon(BookIcon),
-        key: item.id,
-      };
+      const menu: MenuItem = getMenuOption(item)
       if (item.children && item.children.length) {
         menu.children = revertMenu(item.children);
       }
@@ -179,7 +182,6 @@ export const useAsyncRouteStore = defineStore({
       this.keepAliveComponents = compNames;
     },
     async generateRoutes() {
-      debugger;
       const userStore = userMainStore();
       return new Promise((resolve) => {
         userStore.getPermissions().then((res: MenuResult) => {
@@ -187,6 +189,8 @@ export const useAsyncRouteStore = defineStore({
           let menuList = res.menu.concat([]);
           menuList = menuList.filter((item) => !item.meta.hidden);
           menuList = revertMenu(menuList);
+          console.log(menuList)
+          debugger
           this.setMenus(menuList);
           //生成路由
           let accessedRouters;

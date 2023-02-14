@@ -38,7 +38,7 @@
           <n-breadcrumb-item>{{ activeTitle }}</n-breadcrumb-item>
         </n-breadcrumb>
         <n-layout-content
-          :content-style="{padding: '10px', backgroundColor:  theme === 'light' ? '#f0f2f5' : '#000'}"
+          :content-style="{padding: '10px', backgroundColor:  theme === 'dark' ? '#000' : '#f0f2f5'}"
           style="height: calc(100% - 40px) !important"
         >
           <div
@@ -66,7 +66,7 @@
     children?: MenuItem[];
   }
 
-  const theme = localStorage.getItem('theme')
+  const theme = localStorage.getItem('theme') || 'light'
   window.$message = useMessage()
   window.$dialog = useDialog()
   const userStore = userMainStore();
@@ -130,6 +130,7 @@
     const item = activeItem.item as MenuItem;
     return item.title;
   });
+  debugger
   const menuOptions = ref(routerStore.menus)
   const logout = () => {
     window.$dialog.warning({
@@ -150,6 +151,7 @@
   const handleUpdateValue = (key: string, item: MenuItem) => {
     activeKeyRef = ref(key);
     console.log('active-item', item.label)
+    debugger
     activeItem.item = unref(item);
     console.log(activeItem);
   }
